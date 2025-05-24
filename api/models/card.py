@@ -1,19 +1,9 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from .database import Base
 
-class User(Base):
-    __tablename__ = "users"
+from core.db import Base
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
-    cards = relationship("Card", back_populates="owner")
 
 class Card(Base):
     __tablename__ = "cards"
@@ -33,6 +23,7 @@ class Card(Base):
     owner = relationship("User", back_populates="cards")
     reviews = relationship("Review", back_populates="card")
 
+
 class Review(Base):
     __tablename__ = "reviews"
 
@@ -42,4 +33,4 @@ class Review(Base):
     rating = Column(Integer)  # 1-5 rating of how well the user remembered
     next_interval = Column(Integer)  # days until next review
 
-    card = relationship("Card", back_populates="reviews") 
+    card = relationship("Card", back_populates="reviews")

@@ -148,8 +148,12 @@ export default function StatisticsPage() {
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis 
                       dataKey="date" 
-                      className="text-sm text-muted-foreground"
+                      className="text-xs text-muted-foreground"
                       tick={{ fill: 'currentColor' }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                      interval={0}
                     />
                     <YAxis 
                       className="text-sm text-muted-foreground"

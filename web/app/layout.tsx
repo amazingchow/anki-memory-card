@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import "./globals.css";
 import "./custom.css";
 import { Providers } from "./providers";
-import Navbar from "../components/navbar";
+import NavbarWrapper from "../components/navbar-wrapper";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Anki Memory Card",
@@ -24,10 +24,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      {/* <body className={inter.className}> */}
+      <body>
         <Providers>
           <div className="min-h-screen bg-background">
-            <Navbar />
+            <NavbarWrapper />
             <main>{children}</main>
           </div>
         </Providers>

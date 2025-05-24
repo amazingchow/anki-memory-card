@@ -76,7 +76,7 @@ export const auth = {
     const params = new URLSearchParams();
     params.append('username', email);
     params.append('password', password);
-    const response = await api.post('/token', params, {
+    const response = await api.post('/api/v1/users/login', params, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -85,7 +85,7 @@ export const auth = {
   },
 
   register: async (email: string, password: string) => {
-    const response = await api.post('/users/', { email, password });
+    const response = await api.post('/api/v1/users/register', { email, password });
     return response.data;
   },
 };
@@ -93,37 +93,37 @@ export const auth = {
 // Cards API
 export const cards = {
   getAll: async () => {
-    const response = await api.get<Card[]>('/cards/');
+    const response = await api.get<Card[]>('/api/v1/cards/');
     return response.data;
   },
 
   getDue: async () => {
-    const response = await api.get<Card[]>('/cards/due/');
+    const response = await api.get<Card[]>('/api/v1/cards/due/');
     return response.data;
   },
 
   getById: async (id: number) => {
-    const response = await api.get<Card>(`/cards/${id}`);
+    const response = await api.get<Card>(`/api/v1/cards/${id}`);
     return response.data;
   },
 
   create: async (data: Omit<Card, 'id' | 'created_at' | 'updated_at' | 'next_review' | 'review_count' | 'status'>) => {
-    const response = await api.post<Card>('/cards/', data);
+    const response = await api.post<Card>('/api/v1/cards/', data);
     return response.data;
   },
 
   update: async (id: number, data: Partial<Omit<Card, 'id' | 'created_at' | 'updated_at' | 'next_review' | 'review_count' | 'status'>>) => {
-    const response = await api.patch<Card>(`/cards/${id}`, data);
+    const response = await api.patch<Card>(`/api/v1/cards/${id}`, data);
     return response.data;
   },
 
   review: async (id: number, rating: number) => {
-    const response = await api.post<Review>(`/cards/${id}/review`, { card_id: id, rating });
+    const response = await api.post<Review>(`/api/v1/cards/${id}/review`, { card_id: id, rating });
     return response.data;
   },
 
   bulkImport: async (cards: BulkImportCard[]) => {
-    const response = await api.post<Card[]>('/cards/bulk', { cards });
+    const response = await api.post<Card[]>('/api/v1/cards/bulk', { cards });
     return response.data;
   },
 };

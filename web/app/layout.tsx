@@ -1,20 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import "./custom.css";
-import { Providers } from "./providers";
-import Navbar from "../components/navbar";
+// import { Inter } from "next/font/google";
+import "@/app/globals.css";
+import "@/app/custom.css";
+import { Providers } from "@/app/providers";
+import NavbarWrapper from "@/components/navbar-wrapper";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
-const inter = Inter({ subsets: ["latin"] });
+import type { Metadata } from "next";
+
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Anki Memory Card",
-  description: "A flashcard application for learning English words",
-  icons: {
-    icon: [
-      { url: '/favicon.ico', rel: 'shortcut icon' },
-    ],
-  },
+  title: "IntelliVocab",
+  description: "AI-powered flashcard learning platform",
 };
 
 export default function RootLayout({
@@ -24,11 +21,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      {/* <body className={inter.className}> */}
+      <body>
         <Providers>
           <div className="min-h-screen bg-background">
-            <Navbar />
-            <main>{children}</main>
+            <SidebarProvider>
+              <NavbarWrapper />
+              <main className="flex-1 flex justify-center md:pt-0 pt-14">
+                <div className="w-full">
+                  {children}
+                </div>
+              </main>
+            </SidebarProvider>
           </div>
         </Providers>
       </body>

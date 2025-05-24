@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Textarea } from "@/components/ui/textarea";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ExpandableTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;

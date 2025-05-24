@@ -1,0 +1,27 @@
+docs:
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - '**/*.md'
+      - all-globs-to-all-files:
+        - '!web/**'
+        - '!api/**'
+        - '!api/scripts/**'
+        - api/.gitignore
+        - web/.gitignore
+        - '!.github/**'
+        - '!.pre-commit-config.yml'
+
+internal:
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - api/scripts/**
+        - api/.gitignore
+        - web/.gitignore
+        - .github/**
+        - .pre-commit-config.yml
+      - all-globs-to-all-files:
+        - '!./**/*.md'
+        - '!web/**'
+        - '!api/**'

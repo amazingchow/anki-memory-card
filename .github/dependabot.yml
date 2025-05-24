@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+  # Python uv
+  - package-ecosystem: uv
+    directory: /api
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+  # npm
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+  # Docker
+  - package-ecosystem: docker
+    directories:
+      - /api
+      - /web
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆
+  # Docker Compose
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆

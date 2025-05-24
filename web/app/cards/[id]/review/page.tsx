@@ -1,14 +1,18 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCards } from '@/lib/hooks/useCards';
-import type { Card } from '@/lib/api';
 import { ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
-import { Card as UICard, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+
 import { MarkdownPreview } from "@/components/markdown-preview";
+import { Button } from "@/components/ui/button";
+import { Card as UICard, CardContent, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { useCards } from '@/lib/hooks/useCards';
+
+import type { Card } from '@/lib/api';
 
 export default function ReviewCardPage({
   params,
@@ -22,7 +26,7 @@ export default function ReviewCardPage({
   const [showAnswer, setShowAnswer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewing, setIsReviewing] = useState(false);
-  const [flipAnimation, setFlipAnimation] = useState(false);
+  const [, setFlipAnimation] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -47,7 +51,7 @@ export default function ReviewCardPage({
     return () => {
       isMounted = false;
     };
-  }, [id, router]);
+  }, [id, router, getById]);
 
   const handleRating = async (rating: number) => {
     if (!card || isReviewing) return;
@@ -87,7 +91,7 @@ export default function ReviewCardPage({
   }
 
   return (
-    <div className="min-h-screen bg-background py-4 sm:py-8">
+    <div className="min-h-screen bg-background py-6 sm:py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Progress Bar */}
         <div className="mb-4 sm:mb-8">
@@ -110,21 +114,35 @@ export default function ReviewCardPage({
                 showAnswer ? 'opacity-0' : 'opacity-100'
               }`}
             >
-              <UICard className="min-h-[120px] sm:min-h-[400px]">
-                <CardHeader className="p-2 sm:p-6">
-                  <CardTitle className="text-base sm:text-4xl text-center">
-                    {card.word}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center flex-grow p-2 sm:p-6">
-                  <Button
-                    onClick={handleFlip}
-                    size="sm"
-                    className="w-full sm:w-auto sm:text-base"
-                  >
-                    Show Answer
-                    <ArrowRight className="ml-1 h-3 w-3 sm:ml-2 sm:h-4 sm:w-4" />
-                  </Button>
+              <UICard className="min-h-[120px] sm:min-h-[400px] flex items-center">
+                <CardContent className="flex flex-col items-center justify-center w-full h-full p-2 sm:p-6">
+                  <div className="flex items-center justify-center flex-1 w-full gap-4 sm:gap-8">
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                      <div className="relative w-32 h-32 sm:w-64 sm:h-64">
+                        <Image
+                          src="/examples/example1.webp"
+                          alt="Memory Card Logo"
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                      </div>
+                    </div>
+                    <Separator orientation="vertical" className="h-full bg-scrollbar mx-6" />
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                      <CardTitle className="text-base sm:text-4xl text-center mb-4">
+                        {card.word}
+                      </CardTitle>
+                      <Button
+                        onClick={handleFlip}
+                        size="sm"
+                        className="w-full sm:w-auto sm:text-base"
+                      >
+                        Show Answer
+                        <ArrowRight className="ml-1 h-3 w-3 sm:ml-2 sm:h-4 sm:w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </UICard>
             </div>
@@ -193,29 +211,26 @@ export default function ReviewCardPage({
                       ))}
                     </div>
                   </div>
+
+                  <div className="flex justify-between mt-4 sm:mt-8">
+                    <Button
+                      onClick={() => router.back()}
+                      variant="outline"
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Back
+                    </Button>
+                    <Button
+                      onClick={handleFlip}
+                      variant="outline"
+                    >
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      Flip
+                    </Button>
+                  </div>
                 </CardContent>
               </UICard>
             </div>
-          </div>
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t py-4 px-4 sm:px-6">
-          <div className="max-w-4xl mx-auto flex justify-between">
-            <Button
-              onClick={() => router.back()}
-              variant="outline"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
-            <Button
-              onClick={handleFlip}
-              variant="outline"
-            >
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Flip
-            </Button>
           </div>
         </div>
       </div>

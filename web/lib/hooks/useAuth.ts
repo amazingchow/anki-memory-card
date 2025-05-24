@@ -1,7 +1,12 @@
-import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { auth } from '../api';
-import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+
+import { auth } from '@/lib/api';
+import {
+  setToken,
+  setUserId,
+  removeAllCookies,
+} from '@/lib/cookies';
 
 export default function useAuth() {
   const router = useRouter();
@@ -10,7 +15,8 @@ export default function useAuth() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       auth.login(email, password),
     onSuccess: (data) => {
-      Cookies.set('token', data.access_token, { expires: 7 }); // 7 days
+      setToken(data.access_token);
+      setUserId(data.user_id);
       router.push('/cards');
     },
   });
@@ -19,12 +25,12 @@ export default function useAuth() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       auth.register(email, password),
     onSuccess: () => {
-      router.push('/login');
+      router.push('/registered');
     },
   });
 
   const logout = () => {
-    Cookies.remove('token');
+    removeAllCookies();
     router.push('/login');
   };
 

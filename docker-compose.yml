@@ -1,0 +1,84 @@
+services:
+
+  # The database service, used for storing the data.
+  db:
+    image: postgres:17
+    container_name: db
+    ports:
+      - 5432:5432
+    restart: always
+    env_file:
+      - .env.infra
+    environment:
+      - TZ=Asia/Shanghai
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+    volumes:
+      - /usr/share/zoneinfo:/usr/share/zoneinfo
+      - app-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  # The cache service, used for storing the data.
+  cache:
+    image: redis:6.2-rc-alpine3.12
+    container_name: cache
+    ports:
+      - 6379:6379
+    restart: always
+    # 1. We've enabled snapshot (also called RDB), and closed AOF. 
+    #    Redis will save a snapshot of the DB every 3600 seconds if at least 1 write operation was performed.
+    # 2. The --maxmemory option will control the maximum memory that Redis can use, here we set it to 32GB.
+    #    The --maxmemory-policy option will control the behavior when the memory is full, here we set it to noeviction,
+    #    which means that Redis will return an error when the memory is full.
+    command: "redis-server \
+      --requirepass ${REDIS_PASSWORD?Variable not set} \
+      --appendonly no \
+      --save 3600 1 \
+      --maxmemory 34359738368 \
+      --maxmemory-policy noeviction"
+    env_file:
+      - .env.infra
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /usr/share/zoneinfo:/usr/share/zoneinfo
+      - app-cache-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  # # The SSRF Proxy server.
+  # ssrf_proxy:
+  #   image: ubuntu/squid:ubuntu/squid:4.10-20.04_beta
+  #   container_name: infra-ssrf-proxy
+  #   restart: always
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #   volumes:
+  #     - /usr/share/zoneinfo:/usr/share/zoneinfo
+  #     - ./infra/ssrf_proxy-conf.d/squid.conf:/etc/squid/squid.conf
+  #   networks:
+  #     - ssrf_proxy_network
+  #     - default
+
+volumes:
+  app-db-data:
+    driver: local
+  app-cache-data:
+    driver: local
+
+# networks:
+#   # create a network between api and ssrf_proxy, and can not access outside.
+#   ssrf_proxy_network:
+#     driver: bridge
+#     internal: true

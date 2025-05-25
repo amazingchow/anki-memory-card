@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
+import { Testimonials } from '@/components/testimonials';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -26,6 +27,7 @@ export default function LoginPage() {
           <Icons.logo className="mr-2 h-6 w-6" />
           Anki AI
         </div>
+        <Testimonials />
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">

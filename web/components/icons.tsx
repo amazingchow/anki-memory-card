@@ -6,6 +6,7 @@ import {
   Eye,
   EyeOff,
   Check,
+  Star,
   type Icon as LucideIcon,
 } from "lucide-react";
 import { SVGProps } from "react";
@@ -19,6 +20,7 @@ export const Icons = {
   eye: Eye,
   eyeOff: EyeOff,
   check: Check,
+  star: Star,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

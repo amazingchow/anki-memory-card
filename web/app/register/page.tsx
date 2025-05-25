@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Testimonials } from '@/components/testimonials';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -95,6 +96,7 @@ export default function RegisterPage() {
           <Icons.logo className="mr-2 h-6 w-6" />
           Anki AI
         </div>
+        <Testimonials />
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">

@@ -36,16 +36,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Column */}
-      <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">
-        <div className="absolute right-4 top-4 md:right-8 md:top-8">
-          <Link
-            href="/register"
-            className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
-          >
-            Create an account
-          </Link>
-        </div>
-        
+      <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">        
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
@@ -114,7 +105,7 @@ export default function LoginPage() {
             )}
              <div className="text-sm text-right">
                 <Link
-                    href="/forgot-password"
+                    href="/forgot-password" // TODO: Implement forgot password logic
                     className="font-medium text-primary hover:text-primary/90 transition-colors hover:underline"
                   >
                     Forgot password?
@@ -133,15 +124,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <Button 
               variant="outline" 
               className="w-full h-10" 
               onClick={() => { /* TODO: Implement Google Login logic */ }}
               disabled={login.isPending} 
             >
-              <Icons.google className="mr-2 h-4 w-4" />
-              Google
+              <Icons.google className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
@@ -149,8 +139,7 @@ export default function LoginPage() {
               onClick={() => { /* TODO: Implement Apple Login logic */ }}
               disabled={login.isPending} 
             >
-              <Icons.apple className="mr-2 h-4 w-4" />
-              Apple
+              <Icons.apple className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
@@ -158,8 +147,7 @@ export default function LoginPage() {
               onClick={() => { /* TODO: Implement Facebook Login logic */ }}
               disabled={login.isPending} 
             >
-              <Icons.facebook className="mr-2 h-4 w-4" />
-              Facebook
+              <Icons.facebook className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
@@ -167,8 +155,7 @@ export default function LoginPage() {
               onClick={() => { /* TODO: Implement GitHub Login logic */ }}
               disabled={login.isPending} 
             >
-              <Icons.gitHub className="mr-2 h-4 w-4" />
-              GitHub
+              <Icons.gitHub className="h-4 w-4" />
             </Button>
           </div>
 

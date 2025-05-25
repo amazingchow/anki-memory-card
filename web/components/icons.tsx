@@ -3,6 +3,9 @@ import {
   Moon,
   SunMedium,
   Twitter,
+  Eye,
+  EyeOff,
+  Check,
   type Icon as LucideIcon,
 } from "lucide-react";
 import { SVGProps } from "react";
@@ -13,6 +16,9 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   twitter: Twitter,
+  eye: Eye,
+  eyeOff: EyeOff,
+  check: Check,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

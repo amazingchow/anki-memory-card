@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from core.db import Base
+from models.base import Base
 
 
 class Card(Base):

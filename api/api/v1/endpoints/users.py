@@ -4,12 +4,20 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from api.deps import get_current_active_user
 from core.config import settings
 from core.db import get_db
 from core.security import create_access_token, verify_password
-from crud.crud_user import create_user, get_user_by_email
+from crud.crud_user import (
+    cancel_subscription,
+    create_user,
+    delete_user,
+    get_user_by_email,
+    update_user_profile
+)
+from models.user import User
 from schemas.user import User as UserSchema
-from schemas.user import UserCreate
+from schemas.user import UserCreate, UserUpdate
 
 router = APIRouter()
 
@@ -53,3 +61,47 @@ def create_user_endpoint(
             detail="Email already registered"
         )
     return create_user(db=db, user=user)
+
+
+@router.get("/profile", response_model=UserSchema)
+def get_user_profile(
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Get current user profile.
+    """
+    return current_user
+
+
+@router.patch("/profile", response_model=UserSchema)
+def update_user_profile_endpoint(
+    user_update: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Update user profile.
+    """
+    return update_user_profile(db=db, user_id=current_user.id, user_update=user_update)
+
+
+@router.post("/cancel-subscription", response_model=UserSchema)
+def cancel_subscription_endpoint(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Cancel user subscription.
+    """
+    return cancel_subscription(db=db, user_id=current_user.id)
+
+
+@router.delete("/account", response_model=UserSchema)
+def delete_user_account(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Delete user account.
+    """
+    return delete_user(db=db, user_id=current_user.id)

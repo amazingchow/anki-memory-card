@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
 
 const API_URL = 'http://localhost:8000';
 
@@ -37,6 +36,10 @@ api.interceptors.response.use(
 export interface User {
   id: number;
   email: string;
+  nickname?: string;
+  gender?: string;
+  usage_count?: number;
+  is_premium?: boolean;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -136,7 +139,30 @@ export const cards = {
       },
     });
     return response.data;
+  }
+};
+
+// Users API
+export const users = {
+  getProfile: async (id: number) => {
+    const response = await api.get<User>(`/api/v1/users/${id}/profile`);
+    return response.data;
   },
+
+  updateProfile: async (id: number, data: Partial<User>) => {
+    const response = await api.patch<User>(`/api/v1/users/${id}/profile`, data);
+    return response.data;
+  },
+
+  cancelSubscription: async (id: number) => {
+    const response = await api.post(`/api/v1/users/${id}/cancel-subscription`);
+    return response.data;
+  },
+
+  deleteAccount: async (id: number) => {
+    const response = await api.delete(`/api/v1/users/${id}/account`);
+    return response.data;
+  }
 };
 
 export default api; 

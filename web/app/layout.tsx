@@ -4,6 +4,7 @@ import "./globals.css";
 import "./custom.css";
 import { Providers } from "./providers";
 import NavbarWrapper from "../components/navbar-wrapper";
+import { SidebarProvider } from "@/components/ui/sidebar"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +24,14 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className="min-h-screen bg-background">
-            <NavbarWrapper />
-            <main>{children}</main>
+            <SidebarProvider>
+              <NavbarWrapper />
+              <main className="flex-1 flex justify-center">
+                <div className="w-full">
+                  {children}
+                </div>
+              </main>
+            </SidebarProvider>
           </div>
         </Providers>
       </body>

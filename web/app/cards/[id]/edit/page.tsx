@@ -79,8 +79,8 @@ export default function EditCardPage({
   };
 
   return (
-    <div className="min-h-screen bg-background py-4">
-      <div className="max-w-[430px] mx-auto px-4">
+    <div className="min-h-screen bg-background py-6">
+      <div className="max-w-[600px] mx-auto px-4">
         <UICard>
           <CardHeader>
             <CardTitle>Edit Card</CardTitle>

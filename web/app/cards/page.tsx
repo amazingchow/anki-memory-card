@@ -23,14 +23,14 @@ export default function CardsPage() {
 
   return (
     <div className="min-h-screen bg-background py-6">
-      <div className="max-w-[430px] mx-auto px-4">
+      <div className="max-w-[600px] mx-auto px-4">
         <Tabs defaultValue="due" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="due">Due Cards</TabsTrigger>
             <TabsTrigger value="all">All Cards</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="due" className="mt-3">
+          <TabsContent value="due" className="mt-6">
             {dueCards.isLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (

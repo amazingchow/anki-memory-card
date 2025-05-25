@@ -13,8 +13,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 export default function Navbar() {
@@ -29,18 +27,16 @@ export default function Navbar() {
   }
 
   return (
-    <SidebarProvider defaultOpen>
       <Sidebar>
-        <SidebarHeader className="flex items-center justify-between px-4 py-2">
+        <SidebarHeader className="flex flex-row items-center justify-between px-4 py-2">
           <Link
             href="/cards"
-            className="text-lg font-semibold text-primary hover:text-primary/90 chinese-calligraphy"
+            className="text-lg font-semibold text-primary hover:text-primary/90 chinese-calligraphy flex items-center"
           >
             <span className="font-bold">Anki AI</span>
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <SidebarTrigger />
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -110,6 +106,5 @@ export default function Navbar() {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-    </SidebarProvider>
   );
 } 

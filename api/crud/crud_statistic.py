@@ -1,80 +1,95 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.card import Card, Review
 from schemas.statistics import Statistics
 
 
-def get_statistics(db: Session, user_id: int) -> Statistics:
+async def get_statistics(db: AsyncSession, user_id: int) -> Statistics:
     # Get total cards
-    total_cards = db.query(func.count(Card.id)).filter(Card.owner_id == user_id).scalar()
+    total_cards_query = select(func.count(Card.id)).filter(Card.owner_id == user_id)
+    total_cards = await db.scalar(total_cards_query)
     
     # Get cards by status
-    mastered_cards = db.query(func.count(Card.id)).filter(
+    mastered_cards_query = select(func.count(Card.id)).filter(
         Card.owner_id == user_id,
         Card.status == "mastered"
-    ).scalar()
+    )
+    mastered_cards = await db.scalar(mastered_cards_query)
     
-    learning_cards = db.query(func.count(Card.id)).filter(
+    learning_cards_query = select(func.count(Card.id)).filter(
         Card.owner_id == user_id,
         Card.status == "learning"
-    ).scalar()
+    )
+    learning_cards = await db.scalar(learning_cards_query)
     
-    reviewing_cards = db.query(func.count(Card.id)).filter(
+    reviewing_cards_query = select(func.count(Card.id)).filter(
         Card.owner_id == user_id,
         Card.status == "reviewing"
-    ).scalar()
+    )
+    reviewing_cards = await db.scalar(reviewing_cards_query)
     
     # Get due cards
-    due_cards = db.query(func.count(Card.id)).filter(
+    due_cards_query = select(func.count(Card.id)).filter(
         Card.owner_id == user_id,
         Card.next_review <= datetime.now()
-    ).scalar()
+    )
+    due_cards = await db.scalar(due_cards_query)
     
     # Get daily reviews for the last 30 days
     daily_reviews = []
     for i in range(29, -1, -1):
         date = datetime.now() - timedelta(days=i)
-        count = db.query(func.count(Review.id)).filter(
+        daily_reviews_query = select(func.count(Review.id)).filter(
             Review.card_id.in_(
-                db.query(Card.id).filter(Card.owner_id == user_id)
+                select(Card.id).filter(Card.owner_id == user_id)
             ),
             func.date(Review.review_date) == date.date()
-        ).scalar()
+        )
+        count = await db.scalar(daily_reviews_query)
         daily_reviews.append({"date": date.date().isoformat(), "count": count})
     
     # Get review ratings distribution
     review_ratings = []
     for rating in range(1, 29):
-        count = db.query(func.count(Review.id)).filter(
+        ratings_query = select(func.count(Review.id)).filter(
             Review.card_id.in_(
-                db.query(Card.id).filter(Card.owner_id == user_id)
+                select(Card.id).filter(Card.owner_id == user_id)
             ),
             Review.rating == rating
-        ).scalar()
+        )
+        count = await db.scalar(ratings_query)
         review_ratings.append({"rating": rating, "count": count})
     
     # Get card status trend
     card_status_trend = []
     for i in range(30):
         date = datetime.now() - timedelta(days=i)
-        learning = db.query(func.count(Card.id)).filter(
+        
+        learning_query = select(func.count(Card.id)).filter(
             Card.owner_id == user_id,
             Card.status == "learning",
             func.date(Card.created_at) <= date.date()
-        ).scalar()
-        reviewing = db.query(func.count(Card.id)).filter(
+        )
+        learning = await db.scalar(learning_query)
+        
+        reviewing_query = select(func.count(Card.id)).filter(
             Card.owner_id == user_id,
             Card.status == "reviewing",
             func.date(Card.created_at) <= date.date()
-        ).scalar()
-        mastered = db.query(func.count(Card.id)).filter(
+        )
+        reviewing = await db.scalar(reviewing_query)
+        
+        mastered_query = select(func.count(Card.id)).filter(
             Card.owner_id == user_id,
             Card.status == "mastered",
             func.date(Card.created_at) <= date.date()
-        ).scalar()
+        )
+        mastered = await db.scalar(mastered_query)
+        
         card_status_trend.append({
             "date": date.date().isoformat(),
             "learning": learning,

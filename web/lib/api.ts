@@ -125,11 +125,6 @@ export const cards = {
     return response.data;
   },
 
-  bulkImport: async (cards: BulkImportCard[]) => {
-    const response = await api.post<Card[]>('/api/v1/cards/bulk', { cards });
-    return response.data;
-  },
-
   uploadFile: async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);

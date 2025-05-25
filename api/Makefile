@@ -1,3 +1,6 @@
+include .env
+export
+
 VERSION  := v0.1.0
 GIT_HASH := $(shell git rev-parse --short HEAD)
 SRC      := $(shell find . -type f -name '*.py' -not -path "./venv/*" -not -path "./.venv/*" -not -path "./migrations*/versions/*")

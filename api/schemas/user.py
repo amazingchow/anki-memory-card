@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from typing import Optional
 
@@ -6,6 +7,8 @@ from pydantic import BaseModel, EmailStr
 
 class UserBase(BaseModel):
     email: EmailStr
+    nickname: Optional[str] = None
+    gender: Optional[str] = None
 
 
 class UserCreate(UserBase):
@@ -19,6 +22,7 @@ class UserUpdate(BaseModel):
 
 class User(UserBase):
     id: int
+    email: EmailStr
     nickname: Optional[str] = None
     gender: Optional[str] = None
     usage_count: int

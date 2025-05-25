@@ -128,7 +128,6 @@ anki-memory-card/
 - GET `/cards/{id}` - 获取单个卡片
 - POST `/cards/{id}/review` - 复习卡片
 - GET `/cards/due/` - 获取待复习卡片
-- POST `/cards/bulk` - 批量导入卡片
 - GET `/statistics` - 获取统计数据
 
 ## 贡献指南

@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
 from core.config import settings
-from core.db import get_db
+from core.db import get_sqlite_db
 from core.security import create_access_token, verify_password
 from crud.crud_user import (
     cancel_subscription,
@@ -23,14 +24,14 @@ router = APIRouter()
 
 
 @router.post("/login")
-def login_access_token(
-    db: Session = Depends(get_db),
+async def login_access_token(
+    db: AsyncSession = Depends(get_sqlite_db),
     form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
     OAuth2 compatible token login, get an access token for future requests.
     """
-    user = get_user_by_email(db, email=form_data.username)
+    user = await get_user_by_email(db, email=form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -47,20 +48,20 @@ def login_access_token(
 
 
 @router.post("/register", response_model=UserSchema)
-def create_user_endpoint(
+async def create_user_endpoint(
     user: UserCreate,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Create new user.
     """
-    db_user = get_user_by_email(db, email=user.email)
+    db_user = await get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(
             status_code=400,
             detail="Email already registered"
         )
-    return create_user(db=db, user=user)
+    return await create_user(db=db, user=user)
 
 
 @router.get("/profile", response_model=UserSchema)
@@ -74,34 +75,34 @@ def get_user_profile(
 
 
 @router.patch("/profile", response_model=UserSchema)
-def update_user_profile_endpoint(
+async def update_user_profile_endpoint(
     user_update: UserUpdate,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_sqlite_db),
     current_user: User = Depends(get_current_active_user)
 ):
     """
     Update user profile.
     """
-    return update_user_profile(db=db, user_id=current_user.id, user_update=user_update)
+    return await update_user_profile(db=db, user_id=current_user.id, user_update=user_update)
 
 
 @router.post("/cancel-subscription", response_model=UserSchema)
-def cancel_subscription_endpoint(
-    db: Session = Depends(get_db),
+async def cancel_subscription_endpoint(
+    db: AsyncSession = Depends(get_sqlite_db),
     current_user: User = Depends(get_current_active_user)
 ):
     """
     Cancel user subscription.
     """
-    return cancel_subscription(db=db, user_id=current_user.id)
+    return await cancel_subscription(db=db, user_id=current_user.id)
 
 
 @router.delete("/account", response_model=UserSchema)
-def delete_user_account(
-    db: Session = Depends(get_db),
+async def delete_user_account(
+    db: AsyncSession = Depends(get_sqlite_db),
     current_user: User = Depends(get_current_active_user)
 ):
     """
     Delete user account.
     """
-    return delete_user(db=db, user_id=current_user.id)
+    return await delete_user(db=db, user_id=current_user.id)

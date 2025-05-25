@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -10,14 +11,14 @@ class Card(Base):
 
     id = Column(Integer, primary_key=True, index=True, comment="卡片ID")
     word = Column(String, index=True, comment="单词")
-    definition = Column(Text, comment="详细释义")
-    us_phonetic_symbols = Column(String, nullable=True, comment="英美音标")
-    zh_definition = Column(Text, nullable=True, comment="中文释义")
-    example = Column(Text, nullable=True, comment="英文例句")
-    zh_example = Column(Text, nullable=True, comment="中文例句")
-    notes = Column(Text, nullable=True, comment="笔记")
-    pronunciation = Column(String, nullable=True, comment="音频二进制数据")
-    tags = Column(String, nullable=True, comment="标签")
+    definition = Column(Text, nullable=False, comment="详细释义")
+    us_phonetic_symbols = Column(String, default="", comment="英美音标")
+    zh_definition = Column(Text, default="", comment="中文释义")
+    example = Column(Text, default="", comment="英文例句")
+    zh_example = Column(Text, default="", comment="中文例句")
+    notes = Column(Text, default="", comment="笔记")
+    pronunciation = Column(String, default="", comment="音频二进制数据")
+    tags = Column(String, default="", comment="标签")
     next_review = Column(DateTime(timezone=True), comment="下次复习时间")
     review_count = Column(Integer, default=0, comment="复习次数")
     status = Column(String, default="learning", comment="学习状态")  # learning, reviewing, mastered

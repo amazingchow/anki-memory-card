@@ -45,13 +45,6 @@ export function useCards() {
     },
   });
 
-  const bulkImport = useMutation({
-    mutationFn: (cardsToImport: BulkImportCard[]) => cards.bulkImport(cardsToImport),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cards'] });
-    },
-  });
-
   return {
     allCards,
     dueCards,
@@ -59,6 +52,5 @@ export function useCards() {
     createCard,
     updateCard,
     reviewCard,
-    bulkImport,
   };
 } 

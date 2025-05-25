@@ -3,11 +3,10 @@
 import useAuth from '@/lib/hooks/useAuth';
 import { useState } from 'react';
 import Link from 'next/link';
-// Card and CardContent are removed as the new design doesn't use them for the form area
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; // Label will be sr-only for inputs
-import { Icons } from "@/components/icons"; // Ensure Icons.logo and Icons.gitHub are defined
+import { Label } from "@/components/ui/label";
+import { Icons } from "@/components/icons";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -24,15 +23,14 @@ export default function LoginPage() {
       {/* Left Column */}
       <div className="relative hidden h-full flex-col bg-zinc-900 p-10 text-white lg:flex">
         <div className="relative z-20 flex items-center text-lg font-medium">
-          <Icons.logo className="mr-2 h-6 w-6" /> {/* Replace with your actual logo component or SVG */}
-          The Little Peepers Club
+          <Icons.logo className="mr-2 h-6 w-6" />
+          Anki AI
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
               &ldquo;Vocabulary is the bedrock of learning any new language. Think of Anki as the master architect, meticulously ensuring every foundational stone is solidly set within your memory palace. Without it, constructing my tower of multiple languages would have cost me manifolds more effort.&rdquo;
             </p>
-            <footer className="text-sm">Adam Chow</footer>
           </blockquote>
         </div>
       </div>
@@ -41,7 +39,7 @@ export default function LoginPage() {
       <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">
         <div className="absolute right-4 top-4 md:right-8 md:top-8">
           <Link
-            href="/register" // Link to the registration page
+            href="/register"
             className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
           >
             Create an account
@@ -54,7 +52,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your credentials to access your account
+              Learn faster & smarter, remember longer.
             </p>
           </div>
           
@@ -71,24 +69,23 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={login.isPending}
                 autoComplete="email"
-                className="h-10" // Adjusted height
+                className="h-10"
               />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="password" className="sr-only">Password</Label>
-              {/* "Forgot password?" link removed from here to match cleaner form style of reference image */}
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                placeholder="Password" // Changed placeholder
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={login.isPending}
                 autoComplete="current-password"
-                className="h-10" // Adjusted height
+                className="h-10"
               />
             </div>
 
@@ -103,19 +100,18 @@ export default function LoginPage() {
                   Signing in...
                 </span>
               ) : (
-                "Sign In with Email" // Text matches reference image button
+                "Get Started"
               )}
             </Button>
 
             {login.isError && (
-              <div className="rounded-md bg-destructive/15 p-2.5 text-xs text-destructive"> {/* Adjusted styling */}
+              <div className="rounded-md bg-destructive/15 p-2.5 text-xs text-destructive">
                 <div className="flex items-center gap-1.5">
                   <Icons.alertCircle className="h-4 w-4" />
                   <span>Invalid email or password</span>
                 </div>
               </div>
             )}
-             {/* "Forgot password?" could be placed here if desired, e.g., below the error message */}
              <div className="text-sm text-right">
                 <Link
                     href="/forgot-password"
@@ -137,20 +133,47 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
-            className="w-full h-10" 
-            onClick={() => { /* TODO: Implement GitHub Login logic */ }}
-            disabled={login.isPending} 
-          >
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-            GitHub
-          </Button>
+          <div className="grid grid-cols-2 gap-4">
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Google Login logic */ }}
+              disabled={login.isPending} 
+            >
+              <Icons.google className="mr-2 h-4 w-4" />
+              Google
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Apple Login logic */ }}
+              disabled={login.isPending} 
+            >
+              <Icons.apple className="mr-2 h-4 w-4" />
+              Apple
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Facebook Login logic */ }}
+              disabled={login.isPending} 
+            >
+              <Icons.facebook className="mr-2 h-4 w-4" />
+              Facebook
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement GitHub Login logic */ }}
+              disabled={login.isPending} 
+            >
+              <Icons.gitHub className="mr-2 h-4 w-4" />
+              GitHub
+            </Button>
+          </div>
 
-          {/* The "Don't have an account? Sign up" link is more appropriate here for a login page
-              than the Terms/Privacy link from the registration reference image. */}
           <p className="px-6 text-center text-xs text-muted-foreground sm:px-8">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="underline underline-offset-4 hover:text-primary"
@@ -162,4 +185,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+} 

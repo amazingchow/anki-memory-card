@@ -24,14 +24,6 @@ export default function CardsPage() {
   return (
     <div className="min-h-screen bg-background py-6">
       <div className="max-w-[430px] mx-auto px-4">
-        <div className="flex flex-col gap-4 mb-8">
-          <Button asChild className="w-full">
-            <Link href="/cards/new">
-              <Plus className="h-5 w-5 mr-2" />
-              Add New Card
-            </Link>
-          </Button>
-        </div>
         <Tabs defaultValue="due" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="due">Due Cards</TabsTrigger>

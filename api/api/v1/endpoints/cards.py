@@ -1,6 +1,7 @@
+from pathlib import Path
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_user
@@ -122,3 +123,30 @@ def bulk_import_cards(
         db_card = create_card(db=db, card=card, user_id=current_user.id)
         cards.append(db_card)
     return cards
+
+
+@router.post("/import", response_model=List[Card])
+async def import_anki_cards(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Import cards from an Anki .apkg file.
+    """
+    if not file.filename.endswith('.apkg'):
+        raise HTTPException(status_code=400, detail="Only .apkg files are supported")
+    
+    try:
+        # Create .apkg directory if it doesn't exist
+        apkg_dir = Path(".apkg")
+        apkg_dir.mkdir(exist_ok=True)
+        
+        # Save the file
+        file_path = apkg_dir / file.filename
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+            
+        return []  # Return empty list for now since we're just saving the file
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

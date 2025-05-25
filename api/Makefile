@@ -18,7 +18,7 @@ lint: ### Improve your code style. (pyflakes, pycodestyle, isort)
 
 .PHONY: local_run
 local_run: lint ### Run the application locally.
-	@uvicorn \
+	@uv run uvicorn \
 		--app-dir=. \
 		--host="0.0.0.0" \
 		--port=8000 \

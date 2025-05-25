@@ -8,13 +8,8 @@ import NavbarWrapper from "../components/navbar-wrapper";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Anki Memory Card",
-  description: "A flashcard application for learning English words",
-  icons: {
-    icon: [
-      { url: '/favicon.ico', rel: 'shortcut icon' },
-    ],
-  },
+  title: "Anki AI",
+  description: "AI-powered flashcard learning platform",
 };
 
 export default function RootLayout({

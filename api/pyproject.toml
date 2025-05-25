@@ -1,0 +1,17 @@
+[project]
+name = "anki-memory-card"
+version = "0.1.0"
+description = "Anki AI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[all]>=0.115.12",
+    "google-genai>=1.16.1",
+    "httptools>=0.6.4",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic-settings>=2.9.1",
+    "python-dotenv>=1.1.0",
+    "python-jose[cryptography]>=3.4.0",
+    "sqlalchemy>=2.0.41",
+    "uvicorn>=0.34.2",
+]

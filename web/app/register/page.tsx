@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Icons } from '@/components/icons'; // Ensure Icons.logo and Icons.gitHub are defined
+import { Icons } from '@/components/icons';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -28,15 +28,14 @@ export default function RegisterPage() {
       {/* Left Column */}
       <div className="relative hidden h-full flex-col bg-zinc-900 p-10 text-white lg:flex">
         <div className="relative z-20 flex items-center text-lg font-medium">
-          <Icons.logo className="mr-2 h-6 w-6" /> {/* Replace with your actual logo component or SVG */}
-          The Little Peepers Club
+          <Icons.logo className="mr-2 h-6 w-6" />
+          Anki AI
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
               &ldquo;Vocabulary is the bedrock of learning any new language. Think of Anki as the master architect, meticulously ensuring every foundational stone is solidly set within your memory palace. Without it, constructing my tower of multiple languages would have cost me manifolds more effort.&rdquo;
             </p>
-            <footer className="text-sm">Adam Chow</footer>
           </blockquote>
         </div>
       </div>
@@ -45,7 +44,7 @@ export default function RegisterPage() {
       <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">
         <div className="absolute right-4 top-4 md:right-8 md:top-8">
           <Link
-            href="/login" // Adjust if your login route is different
+            href="/login"
             className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
           >
             Login
@@ -119,12 +118,10 @@ export default function RegisterPage() {
               {register.isPending ? (
                 <span className="flex items-center justify-center">
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  Creating account...
                 </span>
               ) : (
-                // This text is taken from the image. If your flow is strictly account CREATION,
-                // you might prefer "Create Account" or "Continue with Email".
-                "Sign In with Email" 
+                "Create account"
               )}
             </Button>
 
@@ -157,15 +154,44 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
-            className="w-full h-10" // Relies on default outline variant styling from ui/button
-            onClick={() => { /* TODO: Implement GitHub Sign In/Up logic */ }}
-            disabled={register.isPending} // Optionally disable during email registration
-          >
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-            GitHub
-          </Button>
+          <div className="grid grid-cols-2 gap-4">
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Google Sign Up logic */ }}
+              disabled={register.isPending} 
+            >
+              <Icons.google className="mr-2 h-4 w-4" />
+              Google
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Apple Sign Up logic */ }}
+              disabled={register.isPending} 
+            >
+              <Icons.apple className="mr-2 h-4 w-4" />
+              Apple
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement Facebook Sign Up logic */ }}
+              disabled={register.isPending} 
+            >
+              <Icons.facebook className="mr-2 h-4 w-4" />
+              Facebook
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-10" 
+              onClick={() => { /* TODO: Implement GitHub Sign Up logic */ }}
+              disabled={register.isPending} 
+            >
+              <Icons.gitHub className="mr-2 h-4 w-4" />
+              GitHub
+            </Button>
+          </div>
 
           <p className="px-6 text-center text-xs text-muted-foreground sm:px-8">
             By clicking continue, you agree to our{' '}
@@ -188,4 +214,4 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-}
+} 

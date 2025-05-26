@@ -21,27 +21,25 @@ from schemas.card import Card, CardCreate, CardUpdate, ReviewCreate
 router = APIRouter()
 
 
-@router.post("/", response_model=Card)
-async def create_card_endpoint(
-    card: CardCreate,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+@router.get("/due", response_model=List[Card])
+async def h_get_due_cards(
+    skip: int = 0,
+    limit: int = 100,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
-    Create new card.
+    Get due cards for review.
     """
-    try:
-        return await create_card(db=db, card=card, user_id=current_user.id)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return await get_due_cards(db=db, user_id=current_user.id, skip=skip, limit=limit)
 
 
 @router.get("/", response_model=List[Card])
-async def get_cards_endpoint(
+async def h_get_cards(
     skip: int = 0,
     limit: int = 100,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Get user cards.
@@ -50,10 +48,10 @@ async def get_cards_endpoint(
 
 
 @router.get("/{card_id}", response_model=Card)
-async def get_card_endpoint(
+async def h_get_card(
     card_id: int,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Get card by ID.
@@ -64,12 +62,27 @@ async def get_card_endpoint(
     return db_card
 
 
+@router.post("/", response_model=Card)
+async def h_create_card(
+    card: CardCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
+):
+    """
+    Create new card.
+    """
+    try:
+        return await create_card(db=db, card=card, user_id=current_user.id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @router.patch("/{card_id}", response_model=Card)
-async def update_card_endpoint(
+async def h_update_card(
     card_id: int,
     card_update: CardUpdate,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Update card.
@@ -80,23 +93,12 @@ async def update_card_endpoint(
     return await update_card(db=db, card_id=card_id, card_update=card_update)
 
 
-@router.get("/due", response_model=List[Card])
-async def get_due_cards_endpoint(
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
-):
-    """
-    Get due cards for review.
-    """
-    return await get_due_cards(db=db, user_id=current_user.id)
-
-
 @router.post("/{card_id}/review", response_model=Card)
-async def review_card_endpoint(
+async def h_review_card(
     card_id: int,
     review: ReviewCreate,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Review card.
@@ -108,9 +110,10 @@ async def review_card_endpoint(
 
 
 @router.post("/import", response_model=List[Card])
-async def import_anki_cards(
+async def h_import_anki_cards(
     file: UploadFile = File(...),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Import cards from an Anki .apkg file.

@@ -112,7 +112,7 @@ def parse_apkg(apkg_path):
             # 将字段内容与字段名对应起来
             note_fields_dict = {}
             for i, content in enumerate(fields_content):
-                field_name = field_names[i] if i < len(field_names) else f"字段_{i+1}"
+                field_name = field_names[i] if i < len(field_names) else f"字段_{i + 1}"
                 note_fields_dict[field_name] = content
             
             note_data = {

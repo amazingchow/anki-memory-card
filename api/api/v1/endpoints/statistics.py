@@ -12,9 +12,9 @@ router = APIRouter()
 
 
 @router.get("/", response_model=Statistics)
-async def get_user_statistics(
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+async def h_get_user_statistics(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Get user statistics.

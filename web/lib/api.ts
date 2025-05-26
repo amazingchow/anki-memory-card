@@ -1,5 +1,9 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import {
+  getToken,
+  getUserId,
+  removeAllCookies,
+} from '@/lib/cookies';
 
 const API_URL = 'http://localhost:8000';
 
@@ -10,11 +14,15 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if it exists
+// Add cookies to requests if it exists
 api.interceptors.request.use((config) => {
-  const token = Cookies.get('token');
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  const userId = getUserId();
+  if (userId) {
+    config.headers.UserId = userId;
   }
   return config;
 });
@@ -24,8 +32,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      Cookies.remove('token');
+      // Clear cookies and redirect to login
+      removeAllCookies();
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -64,13 +72,6 @@ export interface Review {
   review_date: string;
   rating: number;
   next_interval: number;
-}
-
-export interface BulkImportCard {
-  word: string;
-  definition: string;
-  example?: string;
-  notes?: string;
 }
 
 // Auth API
@@ -140,22 +141,22 @@ export const cards = {
 // Users API
 export const users = {
   getProfile: async (id: number) => {
-    const response = await api.get<User>(`/api/v1/users/${id}/profile`);
+    const response = await api.get<User>(`/api/v1/users/profile`);
     return response.data;
   },
 
   updateProfile: async (id: number, data: Partial<User>) => {
-    const response = await api.patch<User>(`/api/v1/users/${id}/profile`, data);
+    const response = await api.patch<User>(`/api/v1/users/profile`, data);
     return response.data;
   },
 
   cancelSubscription: async (id: number) => {
-    const response = await api.post(`/api/v1/users/${id}/cancel-subscription`);
+    const response = await api.post(`/api/v1/users/cancel-subscription`);
     return response.data;
   },
 
   deleteAccount: async (id: number) => {
-    const response = await api.delete(`/api/v1/users/${id}/account`);
+    const response = await api.delete(`/api/v1/users/account`);
     return response.data;
   }
 };

@@ -27,6 +27,7 @@ DEFAULTS = {
     "RECORD_REQUEST_LATENCY": "true",
     "RESTRICT_REGISTRATION_TO_WHITELIST": "false",
     "WHITELIST_EMAILS": "your_whitelist_emails",
+    "BACKEND_CORS_ORIGINS": "http://localhost:3000",
     # Logging
     "LOG_SERVICE_NAME": "Anki AI",
     "LOG_LEVEL": "TRACE",
@@ -37,7 +38,7 @@ DEFAULTS = {
     "CELERY_WORKER_LOG_PRINTER": "disk",  # or "print"
     "CELERY_WORKER_LOG_PRINTER_FILENAME": "./anki-ai-celery-worker.dev.log",
     # Sqlite
-    "SQLALCHEMY_DATABASE_URL": "sqlite:///./anki.db",
+    "SQLALCHEMY_DATABASE_URL": "sqlite:///./anki_ai.db",
     # MySQL
     "MYSQL_SERVER_ENDPOINT": "localhost:3306",
     "MYSQL_USERNAME": "your_mysql_username",
@@ -140,6 +141,7 @@ class Settings(BaseSettings):
     RECORD_REQUEST_LATENCY: bool = get_bool_env("RECORD_REQUEST_LATENCY")
     RESTRICT_REGISTRATION_TO_WHITELIST: bool = get_bool_env("RESTRICT_REGISTRATION_TO_WHITELIST")
     WHITELIST_EMAILS: List[str] = get_array_env("WHITELIST_EMAILS")
+    BACKEND_CORS_ORIGINS: List[str] = get_array_env("BACKEND_CORS_ORIGINS")
     # Logging
     LOG_SERVICE_NAME: str = get_env("LOG_SERVICE_NAME")
     LOG_LEVEL: str = get_env("LOG_LEVEL")
@@ -235,7 +237,6 @@ class Settings(BaseSettings):
 
 try:
     settings = Settings()
-    settings_whitelist = settings.WHITELISTING_EMAILS.split(",")
 except ValidationError as exc:
     loguru_logger.error(f"Failed to parse settings, err: {exc.json(indent=4)}")
 

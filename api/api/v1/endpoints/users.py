@@ -24,9 +24,9 @@ router = APIRouter()
 
 
 @router.post("/login")
-async def login_access_token(
-    db: AsyncSession = Depends(get_sqlite_db),
-    form_data: OAuth2PasswordRequestForm = Depends()
+async def h_login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     OAuth2 compatible token login, get an access token for future requests.
@@ -44,11 +44,12 @@ async def login_access_token(
             data={"sub": user.email}, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
+        "user_id": user.id
     }
 
 
 @router.post("/register", response_model=UserSchema)
-async def create_user_endpoint(
+async def h_create_user_endpoint(
     user: UserCreate,
     db: AsyncSession = Depends(get_sqlite_db)
 ):
@@ -65,7 +66,7 @@ async def create_user_endpoint(
 
 
 @router.get("/profile", response_model=UserSchema)
-def get_user_profile(
+def h_get_user_profile(
     current_user: User = Depends(get_current_active_user)
 ):
     """
@@ -75,10 +76,10 @@ def get_user_profile(
 
 
 @router.patch("/profile", response_model=UserSchema)
-async def update_user_profile_endpoint(
+async def h_update_user_profile_endpoint(
     user_update: UserUpdate,
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Update user profile.
@@ -87,9 +88,9 @@ async def update_user_profile_endpoint(
 
 
 @router.post("/cancel-subscription", response_model=UserSchema)
-async def cancel_subscription_endpoint(
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+async def h_cancel_subscription_endpoint(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Cancel user subscription.
@@ -98,9 +99,9 @@ async def cancel_subscription_endpoint(
 
 
 @router.delete("/account", response_model=UserSchema)
-async def delete_user_account(
-    db: AsyncSession = Depends(get_sqlite_db),
-    current_user: User = Depends(get_current_active_user)
+async def h_delete_user_account(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_sqlite_db)
 ):
     """
     Delete user account.

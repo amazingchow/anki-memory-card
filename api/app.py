@@ -10,8 +10,10 @@ from api.v1.api import api_router
 from core.config import settings
 from core.db import sqlite_engine
 from core.loguru_logger import init_global_logger
+from middlewares.recover_panic_and_report_latency import (
+    RecoverPanicAndReportLatencyMiddleware
+)
 from models.base import Base
-from middlewares.recover_panic_and_report_latency import RecoverPanicAndReportLatencyMiddleware
 
 
 # --- 生命周期事件 (可选) ---

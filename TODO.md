@@ -2,3 +2,8 @@
 
 * 前端技术栈：Next.js、Tailwind CSS、Shadcn UI、Lucide Icons、React、TypeScript等
 * 后端技术栈：FastAPI、SQLAlchemy、SQLite等
+
+
+* 实现邮件通知发送功能
+* 实现浏览器推送通知功能
+* 实现定时提醒功能

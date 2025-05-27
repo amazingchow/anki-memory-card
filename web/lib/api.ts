@@ -74,6 +74,18 @@ export interface Review {
   next_interval: number;
 }
 
+export interface NotificationSettings {
+  email_notifications: boolean;
+  push_notifications: boolean;
+  notification_types: {
+    new_cards: boolean;
+    study_reminders: boolean;
+    achievement_unlocked: boolean;
+    system_updates: boolean;
+  };
+  study_reminder_time: string;
+}
+
 // Auth API
 export const auth = {
   login: async (email: string, password: string) => {
@@ -157,6 +169,16 @@ export const users = {
 
   deleteAccount: async (id: number) => {
     const response = await api.delete(`/api/v1/users/account`);
+    return response.data;
+  },
+
+  getNotificationSettings: async () => {
+    const response = await api.get<NotificationSettings>('/api/v1/users/notification-settings');
+    return response.data;
+  },
+
+  updateNotificationSettings: async (settings: NotificationSettings) => {
+    const response = await api.patch<NotificationSettings>('/api/v1/users/notification-settings', settings);
     return response.data;
   }
 };

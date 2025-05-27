@@ -55,10 +55,10 @@ export default function CardsPage() {
                   <p className="text-muted-foreground">No cards due for review</p>
                 </CardContent>
               </Card>
-            ) : (
+            ) : Array.isArray(dueCards.data) ? (
               <Carousel className="w-full">
                 <CarouselContent>
-                  {dueCards.data?.map((card) => (
+                  {dueCards.data.map((card) => (
                     <CarouselItem key={card.id}>
                       <Card className="hover:shadow-md transition-shadow">
                         <CardHeader>
@@ -84,6 +84,12 @@ export default function CardsPage() {
                 <CarouselPrevious />
                 <CarouselNext />
               </Carousel>
+            ) : (
+              <Card className="bg-destructive/10">
+                <CardContent className="p-6">
+                  <p className="text-destructive">Unexpected data format</p>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
 
@@ -112,10 +118,10 @@ export default function CardsPage() {
                   <p className="text-muted-foreground">No cards yet</p>
                 </CardContent>
               </Card>
-            ) : (
+            ) : Array.isArray(allCards.data) ? (
               <Carousel className="w-full">
                 <CarouselContent>
-                  {allCards.data?.map((card) => (
+                  {allCards.data.map((card) => (
                     <CarouselItem key={card.id}>
                       <Card className="hover:shadow-md transition-shadow">
                         <CardHeader>
@@ -144,6 +150,12 @@ export default function CardsPage() {
                 <CarouselPrevious />
                 <CarouselNext />
               </Carousel>
+            ) : (
+              <Card className="bg-destructive/10">
+                <CardContent className="p-6">
+                  <p className="text-destructive">Unexpected data format</p>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
         </Tabs>

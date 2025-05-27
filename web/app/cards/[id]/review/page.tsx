@@ -126,7 +126,7 @@ export default function ReviewCardPage({
                         />
                       </div>
                     </div>
-                    <Separator orientation="vertical" className="h-full bg-scrollbar" />
+                    <Separator orientation="vertical" className="h-full bg-scrollbar mx-6" />
                     <div className="flex-1 flex flex-col items-center justify-center">
                       <CardTitle className="text-base sm:text-4xl text-center mb-4">
                         {card.word}

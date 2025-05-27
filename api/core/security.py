@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+from jose import exceptions as jose_exceptions
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -41,7 +42,5 @@ def parse_token(token: str) -> bool | dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
-    except jwt.ExpiredSignatureError:
-        return False
-    except jwt.InvalidTokenError:
+    except jose_exceptions.JWTError:
         return False

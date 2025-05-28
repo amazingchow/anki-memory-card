@@ -6,9 +6,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
-from core.config import settings
-from core.db import get_sqlite_db
-from core.security import create_access_token, verify_password
+from corelib.config import settings
+from corelib.db import get_sqlite_db
+from corelib.security import create_access_token, verify_password
 from crud.crud_user import (
     cancel_subscription,
     create_user,

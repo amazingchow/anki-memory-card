@@ -3,9 +3,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
-from core.db import get_sqlite_db
-from core.security import parse_token
+from corelib.config import settings
+from corelib.db import get_sqlite_db
+from corelib.security import parse_token
 from crud.crud_user import get_user_by_email
 from models.user import User
 

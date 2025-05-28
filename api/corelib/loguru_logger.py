@@ -4,7 +4,7 @@ import sys
 
 from loguru import logger as loguru_logger
 
-from core.config import settings
+from corelib.config import settings
 
 
 def _env(key, type_, default=None):

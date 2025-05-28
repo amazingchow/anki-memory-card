@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api import deps
-from core.db import get_sqlite_db
+from corelib.db import get_sqlite_db
 from crud.curd_notification_setting import (
     create_notification_settings,
     get_notification_settings,

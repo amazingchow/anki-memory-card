@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine
 )
 
-from core.config import settings
+from corelib.config import settings
 
 # Sqlite
 sqlite_engine = create_async_engine(

@@ -7,9 +7,9 @@ from loguru import logger as loguru_logger
 from starlette.responses import JSONResponse
 
 from api.v1.api import api_router
-from core.config import settings
-from core.db import sqlite_engine
-from core.loguru_logger import init_global_logger
+from corelib.config import settings
+from corelib.db import sqlite_engine
+from corelib.loguru_logger import init_global_logger
 from middlewares.recover_panic_and_report_latency import (
     RecoverPanicAndReportLatencyMiddleware
 )

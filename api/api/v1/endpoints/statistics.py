@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
-from core.db import get_sqlite_db
+from corelib.db import get_sqlite_db
 from crud.crud_statistic import get_statistics
 from models.user import User
 from schemas.statistics import Statistics

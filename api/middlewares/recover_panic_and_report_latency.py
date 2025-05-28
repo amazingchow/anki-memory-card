@@ -9,8 +9,8 @@ from starlette.middleware.base import (
 )
 from starlette.responses import JSONResponse, Response
 
-from core.config import settings
-from core.retry_with_backoff import MaximumNumberOfRetriesExceededError
+from corelib.config import settings
+from corelib.retry_with_backoff import MaximumNumberOfRetriesExceededError
 
 
 class RecoverPanicAndReportLatencyMiddleware(BaseHTTPMiddleware):

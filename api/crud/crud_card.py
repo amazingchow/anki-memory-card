@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.spaced_repetition import calculate_next_review, get_review_status
+from corelib.spaced_repetition import calculate_next_review, get_review_status
 from models.card import Card
 from schemas.card import CardCreate, CardUpdate
 

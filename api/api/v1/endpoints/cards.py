@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
-from core.db import get_sqlite_db
+from corelib.db import get_sqlite_db
 from crud.crud_card import (
     create_card,
     create_review,

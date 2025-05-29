@@ -6,87 +6,80 @@ import { Button } from "@/components/ui/button";
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="container max-w-4xl mx-auto px-4 py-12">
+      <div className="container max-w-5xl mx-auto px-6 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Privacy Policy</h1>
-          <Button variant="outline" asChild>
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
+            <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
+          </div>
+          <Button variant="outline" size="lg" asChild>
             <Link href="/register">Back to Register</Link>
           </Button>
         </div>
 
-        <div className="prose prose-zinc dark:prose-invert max-w-none">
-          <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">1. Information We Collect</h2>
+            <p className="text-sm text-muted-foreground">
+              We collect information that you provide directly to us, including account information (email address, password), content you create and store in the application, usage data and preferences, and device and browser information.
+            </p>
+          </div>
 
-          <h2>1. Information We Collect</h2>
-          <p>
-            We collect information that you provide directly to us, including:
-          </p>
-          <ul>
-            <li>Account information (email address, password)</li>
-            <li>Content you create and store in the application</li>
-            <li>Usage data and preferences</li>
-            <li>Device and browser information</li>
-          </ul>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">2. How We Use Your Information</h2>
+            <p className="text-sm text-muted-foreground">
+              We use the information we collect to provide, maintain, and improve our services, process transactions, send technical notices, respond to your questions, and monitor usage patterns.
+            </p>
+          </div>
 
-          <h2>2. How We Use Your Information</h2>
-          <p>
-            We use the information we collect to:
-          </p>
-          <ul>
-            <li>Provide, maintain, and improve our services</li>
-            <li>Process and complete transactions</li>
-            <li>Send you technical notices and support messages</li>
-            <li>Respond to your comments and questions</li>
-            <li>Monitor and analyze trends and usage</li>
-          </ul>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">3. Information Sharing</h2>
+            <p className="text-sm text-muted-foreground">
+              We do not share your personal information with third parties except with your consent, to comply with legal obligations, to protect our rights, or with service providers who assist in our operations.
+            </p>
+          </div>
 
-          <h2>3. Information Sharing</h2>
-          <p>
-            We do not share your personal information with third parties except in the following circumstances:
-          </p>
-          <ul>
-            <li>With your consent</li>
-            <li>To comply with legal obligations</li>
-            <li>To protect our rights and prevent fraud</li>
-            <li>With service providers who assist in our operations</li>
-          </ul>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">4. Data Security</h2>
+            <p className="text-sm text-muted-foreground">
+              We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+            </p>
+          </div>
 
-          <h2>4. Data Security</h2>
-          <p>
-            We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
-          </p>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">5. Your Rights</h2>
+            <p className="text-sm text-muted-foreground">
+              You have the right to access your personal information, correct inaccurate data, request deletion of your data, object to processing of your data, and export your data.
+            </p>
+          </div>
 
-          <h2>5. Your Rights</h2>
-          <p>
-            You have the right to:
-          </p>
-          <ul>
-            <li>Access your personal information</li>
-            <li>Correct inaccurate data</li>
-            <li>Request deletion of your data</li>
-            <li>Object to processing of your data</li>
-            <li>Export your data</li>
-          </ul>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">6. Cookies and Tracking</h2>
+            <p className="text-sm text-muted-foreground">
+              We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+            </p>
+          </div>
 
-          <h2>6. Cookies and Tracking</h2>
-          <p>
-            We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
-          </p>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">7. Children&apos;s Privacy</h2>
+            <p className="text-sm text-muted-foreground">
+              Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
+            </p>
+          </div>
 
-          <h2>7. Children&apos;s Privacy</h2>
-          <p>
-            Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
-          </p>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">8. Changes to This Policy</h2>
+            <p className="text-sm text-muted-foreground">
+              We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+            </p>
+          </div>
 
-          <h2>8. Changes to This Policy</h2>
-          <p>
-            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
-          </p>
-
-          <h2>9. Contact Us</h2>
-          <p>
-            If you have any questions about this Privacy Policy, please contact us at privacy@example.com.
-          </p>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">9. Contact Us</h2>
+            <p className="text-sm text-muted-foreground">
+              If you have any questions about this Privacy Policy, please contact us at privacy@example.com.
+            </p>
+          </div>
         </div>
       </div>
     </div>

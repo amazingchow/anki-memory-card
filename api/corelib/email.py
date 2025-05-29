@@ -1,0 +1,114 @@
+import json
+from datetime import datetime, timedelta, timezone
+
+import resend
+
+from corelib.config import settings
+from corelib.security import encrypt_aes
+
+
+def send_activation_email(email: str) -> tuple[str | None, bool]:
+    """
+    Send activation email to user.
+    
+    Args:
+        email: User's email address
+        
+    Returns:
+        bool: True if email was sent successfully, False otherwise
+    """
+    try:
+        # Create data with expiration time
+        expiration_time = datetime.now(timezone.utc) + timedelta(hours=24)
+        data = {
+            "email": email,
+            "expires_at": expiration_time.isoformat()
+        }
+        # Encrypt the data
+        encrypted_data = encrypt_aes(json.dumps(data))
+        
+        resend.api_key = settings.RESEND_API_KEY
+        response = resend.Emails.send({
+            "from": settings.RESEND_FROM_EMAIL,
+            "to": email,
+            "subject": "Welcome to Anki AI - Activate Your Account",
+            "html": f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {{
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #333;
+                        margin: 0;
+                        padding: 0;
+                    }}
+                    .container {{
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }}
+                    .header {{
+                        background-color: hsl(var(--primary));
+                        color: white;
+                        padding: 30px;
+                        text-align: center;
+                        border-radius: 8px 8px 0 0;
+                    }}
+                    .content {{
+                        background-color: white;
+                        padding: 30px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 0 0 8px 8px;
+                    }}
+                    .button {{
+                        display: inline-block;
+                        background-color: hsl(var(--primary));
+                        color: white;
+                        padding: 12px 24px;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        margin: 20px 0;
+                        font-weight: 500;
+                    }}
+                    .footer {{
+                        text-align: center;
+                        margin-top: 20px;
+                        color: #666;
+                        font-size: 14px;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1 style="margin: 0; font-size: 24px;">Welcome to Anki AI!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Thank you for joining Anki AI! We're excited to have you on board.</p>
+                        <p>To get started and activate your account, please click the button below:</p>
+                        <div style="text-align: left;">
+                            <a href="{settings.FRONTEND_URL}/activate?token={encrypted_data}" class="button">Activate Account</a>
+                        </div>
+                        <p>If you did not create this account, you can safely ignore this email.</p>
+                        <p>This activation link will expire in 24 hours.</p>
+                    </div>
+                    <div class="footer">
+                        <p>Best regards,<br>The Anki AI Team</p>
+                        <p style="font-size: 12px; color: #999;">This is an automated message, please do not reply to this email.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        })
+        if (response is not None) and (response['id'] is not None):
+            return (response['id'], True)
+        else:
+            return (None, False)
+    except Exception as e:
+        print(f"Failed to send activation email: {str(e)}")
+        return (None, False)

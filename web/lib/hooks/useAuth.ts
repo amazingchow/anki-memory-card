@@ -24,7 +24,7 @@ export default function useAuth() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       auth.register(email, password),
     onSuccess: () => {
-      router.push('/login');
+      router.push('/registered');
     },
   });
 

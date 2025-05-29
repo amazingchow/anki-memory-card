@@ -104,6 +104,11 @@ export const auth = {
     const response = await api.post('/api/v1/users/register', { email, password });
     return response.data;
   },
+
+  activate: async (token: string) => {
+    const response = await api.get(`/api/v1/users/activate?token=${token}`);
+    return response.data;
+  },
 };
 
 // Cards API
@@ -152,22 +157,22 @@ export const cards = {
 
 // Users API
 export const users = {
-  getProfile: async (id: number) => {
+  getProfile: async () => {
     const response = await api.get<User>(`/api/v1/users/profile`);
     return response.data;
   },
 
-  updateProfile: async (id: number, data: Partial<User>) => {
+  updateProfile: async (data: Partial<User>) => {
     const response = await api.patch<User>(`/api/v1/users/profile`, data);
     return response.data;
   },
 
-  cancelSubscription: async (id: number) => {
+  cancelSubscription: async () => {
     const response = await api.post(`/api/v1/users/cancel-subscription`);
     return response.data;
   },
 
-  deleteAccount: async (id: number) => {
+  deleteAccount: async () => {
     const response = await api.delete(`/api/v1/users/account`);
     return response.data;
   },

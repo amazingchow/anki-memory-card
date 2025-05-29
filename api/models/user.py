@@ -12,6 +12,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, comment="用户ID")
     email = Column(String, unique=True, index=True, comment="邮箱")
     hashed_password = Column(String, nullable=False, comment="密码")
+    is_verified = Column(Boolean, default=False, comment="是否已验证邮箱")
     nickname = Column(String, default="Anki User", comment="昵称")
     gender = Column(String, default="female", comment="性别")
     usage_count = Column(Integer, default=0, comment="使用次数")

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+import json
+from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
+from loguru import logger as loguru_logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
 from corelib.config import settings
 from corelib.db import get_sqlite_db
-from corelib.security import create_access_token, verify_password
+from corelib.email import send_activation_email
+from corelib.security import create_access_token, decrypt_aes, verify_password
 from crud.crud_user import (
     cancel_subscription,
     create_user,
@@ -38,6 +41,12 @@ async def h_login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please verify your email before logging in",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
@@ -62,7 +71,58 @@ async def h_create_user_endpoint(
             status_code=400,
             detail="Email already registered"
         )
-    return await create_user(db=db, user=user)
+    
+    # Create user
+    new_user = await create_user(db=db, user=user)
+    
+    # Send activation email
+    resend_id, ok = send_activation_email(user.email)
+    if not ok:
+        loguru_logger.error(f"Failed to send activation email to {user.email}")
+    else:
+        loguru_logger.info(f"Activation email sent to {user.email} with resend_id: {resend_id}")
+    
+    return new_user
+
+
+@router.get("/activate")
+async def h_activate_user(
+    token: str = Query(..., description="The activation token"),
+    db: AsyncSession = Depends(get_sqlite_db)
+):
+    """
+    Activate user account using encrypted token.
+    """
+    try:
+        # Decrypt the token to get the email
+        data = json.loads(decrypt_aes(token))
+        email = data['email']
+        expires_at = data['expires_at']
+        if datetime.now(timezone.utc) > datetime.fromisoformat(expires_at):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Activation token expired"
+            )
+        
+        # Get user by email
+        user = await get_user_by_email(db, email=email)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Update user's verified status
+        user.is_verified = True
+        await db.commit()
+        
+        return {"message": "Account activated successfully"}
+    except Exception as exc:
+        loguru_logger.error(f"Failed to activate user: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired activation token"
+        )
 
 
 @router.get("/profile", response_model=UserSchema)

@@ -26,9 +26,6 @@ export function Notifications({ settings, onSettingsChange }: NotificationsProps
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Notifications</CardTitle>
-        <div className="text-sm text-muted-foreground mb-4">
-          Configure how you want to receive notifications.
-        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <Separator />

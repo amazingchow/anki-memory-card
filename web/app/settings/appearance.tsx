@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Separator } from '@/components/ui/separator';
 
 interface AppearanceProps {
@@ -23,14 +24,11 @@ export function Appearance({ selectedColorTheme, onColorThemeChange }: Appearanc
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Appearance</CardTitle>
-        <div className="text-sm text-muted-foreground mb-4">
-          Choose your theme preference.
-        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <Separator />
         <div className="space-y-2">
-          <div className="font-medium mb-2">Theme preferences</div>
+          <Label htmlFor="username">Theme preferences</Label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {colorThemes.map((color) => (
               <button

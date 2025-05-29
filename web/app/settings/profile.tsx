@@ -20,13 +20,10 @@ export function Profile({ profile, onProfileChange, onSave }: ProfileProps) {
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Profile</CardTitle>
-        <div className="text-sm text-muted-foreground mb-4">
-          This is how others will see you on the site.
-        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <Separator />
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label htmlFor="username">Username</Label>
           <Input
             id="username"
@@ -34,23 +31,21 @@ export function Profile({ profile, onProfileChange, onSave }: ProfileProps) {
             onChange={e => onProfileChange({ ...profile, username: e.target.value })}
             placeholder="Enter your username"
           />
-          <div className="text-xs text-muted-foreground">
-            This is your public display name. It can be your real name or a pseudonym.
-          </div>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             value={profile.email}
             disabled
             placeholder="Select a verified email to display"
+            className="bg-gray-300"
           />
           <div className="text-xs text-muted-foreground">
             You cannot change your email address.
           </div>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label htmlFor="bio">Bio</Label>
           <Textarea
             id="bio"

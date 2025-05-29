@@ -1,6 +1,8 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from '@/components/ui/separator';
 
 interface AccountProps {
@@ -18,18 +20,13 @@ export function Account({ profile, onCancelSubscription, onDeleteAccount }: Acco
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Account</CardTitle>
-        <div className="text-sm text-muted-foreground mb-4">
-          This is your account information.
-        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <Separator />
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-small">Subscription</div>
-            <div className="text-xs text-muted-foreground">
-              {profile.isPremium ? 'You are a premium member.' : 'You are on the free plan.'}
-            </div>
+        <div className="space-y-1">
+          <Label>Subscription</Label>
+          <div className="text-xs text-muted-foreground">
+            {profile.isPremium ? 'You are a premium member.' : 'You are on the free plan.'}
           </div>
           {profile.isPremium ? (
             <Button variant="outline" onClick={onCancelSubscription}>Cancel Subscription</Button>
@@ -37,18 +34,15 @@ export function Account({ profile, onCancelSubscription, onDeleteAccount }: Acco
             <Button variant="default" onClick={() => window.location.href = '/subscribe'}>Upgrade to Premium</Button>
           )}
         </div>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-medium">AI Card Generation Usage</div>
-            <div className="text-xs text-muted-foreground">
-              {profile.isPremium ? 'Unlimited usage for premium members.' : 'Free accounts are limited to 15 AI card generations.'}
-            </div>
+        <div className="space-y-1">
+          <Label>AI Card Generation Usage</Label>
+          <div className="text-xs text-muted-foreground">
+            {profile.isPremium ? 'Unlimited usage for premium members.' : 'Free accounts are limited to 15 AI card generations.'}
           </div>
-          <span className="font-bold">{profile.isPremium ? '∞' : `${profile.usageCount} / 15`}</span>
         </div>
         {profile.createdAt && (
-          <div>
-            <div className="font-medium">Registered At</div>
+          <div className="space-y-1">
+            <Label>Registered At</Label>
             <div className="text-xs text-muted-foreground">{profile.createdAt}</div>
           </div>
         )}

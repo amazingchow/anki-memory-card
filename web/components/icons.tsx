@@ -1,5 +1,4 @@
 import {
-  LucideProps,
   Moon,
   SunMedium,
   Twitter,
@@ -9,7 +8,10 @@ import {
   Star,
   type Icon as LucideIcon,
 } from "lucide-react";
-import { SVGProps } from "react";
+
+import type {
+  LucideProps} from "lucide-react";
+import type { SVGProps } from "react";
 
 export type Icon = typeof LucideIcon;
 

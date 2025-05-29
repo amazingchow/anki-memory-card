@@ -1,19 +1,20 @@
 'use client';
 
-import useAuth from '@/lib/hooks/useAuth';
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
+
+import { Icons } from '@/components/icons';
+import { Testimonials } from '@/components/testimonials';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Icons } from '@/components/icons';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Testimonials } from '@/components/testimonials';
+import useAuth from '@/lib/hooks/useAuth';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');

@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (theme === 'default') return;
       
       try {
-        const css = await import(`@/app/themes/globals-${theme}.css`);
+        await import(`@/app/themes/globals-${theme}.css`);
         // CSS 模块会被自动处理
       } catch (error) {
         console.error(`Failed to load theme: ${theme}`, error);

@@ -1,6 +1,7 @@
 "use client"
 
-import { Check, ChevronRight, CreditCard, Crown, ExternalLink, Heart, Shield, ShoppingCart, Stars } from "lucide-react"
+import { Check, ChevronRight, Crown, ExternalLink, Heart, Shield, ShoppingCart, Stars } from "lucide-react"
+
 import { SinglePricingCard, type Testimonial } from "@/components/single-pricing-card"
 
 export default function PricingSectionBasic() {

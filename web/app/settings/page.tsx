@@ -1,19 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useCallback } from 'react';
+
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { useToast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
-import { users, type NotificationSettings as ApiNotificationSettings } from '@/lib/api';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { users, type NotificationSettings as ApiNotificationSettings } from '@/lib/api';
 
 const SIDEBAR_ITEMS = [
   { key: 'profile', label: 'Profile' },
@@ -57,7 +57,7 @@ export default function SettingsPage() {
     createdAt: '',
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedTheme, setSelectedTheme] = useState('system');
+  const [, setSelectedTheme] = useState('system');
   const [selectedColorTheme, setSelectedColorTheme] = useState('default');
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     emailNotifications: true,
@@ -71,22 +71,9 @@ export default function SettingsPage() {
     studyReminderTime: '20:00',
   });
 
-  useEffect(() => {
-    fetchUserProfile();
-    fetchNotificationSettings();
-    // 读取localStorage
-    const theme = typeof window !== 'undefined' ? localStorage.getItem('theme-preference') : null;
-    const colorTheme = typeof window !== 'undefined' ? localStorage.getItem('color-theme') || 'default' : 'default';
-    if (theme === 'light' || theme === 'dark' || theme === 'system') {
-      setSelectedTheme(theme);
-      applyTheme(theme);
-    }
-    setSelectedColorTheme(colorTheme);
-  }, []);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
-      const response = await users.getProfile(profile.id);
+      const response = await users.getProfile();
       setProfile({
         id: response.id,
         username: response.nickname || '',
@@ -96,7 +83,7 @@ export default function SettingsPage() {
         usageCount: response.usage_count || 0,
         createdAt: response.created_at || '',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to load profile data",
@@ -105,9 +92,9 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
-  const fetchNotificationSettings = async () => {
+  const fetchNotificationSettings = useCallback(async () => {
     try {
       const response = await users.getNotificationSettings();
       console.log(response);
@@ -122,7 +109,7 @@ export default function SettingsPage() {
         },
         studyReminderTime: response.study_reminder_time,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       toast({
         title: "Error",
@@ -130,11 +117,24 @@ export default function SettingsPage() {
         variant: "destructive",
       });
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchUserProfile();
+    fetchNotificationSettings();
+    // 读取localStorage
+    const theme = typeof window !== 'undefined' ? localStorage.getItem('theme-preference') : null;
+    const colorTheme = typeof window !== 'undefined' ? localStorage.getItem('color-theme') || 'default' : 'default';
+    if (theme === 'light' || theme === 'dark' || theme === 'system') {
+      setSelectedTheme(theme);
+      applyTheme(theme);
+    }
+    setSelectedColorTheme(colorTheme);
+  }, [fetchNotificationSettings, fetchUserProfile]);
 
   const handleSaveProfile = async () => {
     try {
-      await users.updateProfile(profile.id, {
+      await users.updateProfile({
         nickname: profile.username,
         email: profile.email,
       });
@@ -142,7 +142,7 @@ export default function SettingsPage() {
         title: "Success",
         description: "Profile updated successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update profile",
@@ -153,13 +153,13 @@ export default function SettingsPage() {
 
   const handleCancelSubscription = async () => {
     try {
-      await users.cancelSubscription(profile.id);
+      await users.cancelSubscription();
       setProfile(prev => ({ ...prev, isPremium: false }));
       toast({
         title: "Success",
         description: "Subscription cancelled successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to cancel subscription",
@@ -170,30 +170,14 @@ export default function SettingsPage() {
 
   const handleDeleteAccount = async () => {
     try {
-      await users.deleteAccount(profile.id);
+      await users.deleteAccount();
       window.location.href = '/login';
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete account",
         variant: "destructive",
       });
-    }
-  };
-
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      document.cookie = 'token=; Max-Age=0; path=/;';
-      document.cookie = 'userId=; Max-Age=0; path=/;';
-      window.location.href = '/login';
-    }
-  };
-
-  const handleThemeChange = (theme: string) => {
-    setSelectedTheme(theme);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('theme-preference', theme);
-      applyTheme(theme);
     }
   };
 
@@ -211,7 +195,7 @@ export default function SettingsPage() {
         try {
           // 动态导入主题CSS
           await import(`@/app/themes/globals-${colorTheme}.css`);
-        } catch (error) {
+        } catch (error: unknown) {
           console.error(`Failed to load theme: ${colorTheme}`, error);
         }
       }
@@ -248,7 +232,7 @@ export default function SettingsPage() {
         title: "Success",
         description: "Notification settings updated successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update notification settings",

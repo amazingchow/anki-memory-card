@@ -1,9 +1,12 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useEffect, useState } from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
+
 import { ThemeProvider } from '@/components/theme-provider';
+
+import type { ReactNode} from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {

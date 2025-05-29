@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+
 import { Icons } from '@/components/icons';
 
 interface Testimonial {

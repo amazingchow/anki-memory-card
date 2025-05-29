@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCards } from '@/lib/hooks/useCards';
-import type { Card } from '@/lib/api';
 import { ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
-import { Card as UICard, CardContent, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { MarkdownPreview } from "@/components/markdown-preview";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+
+import { MarkdownPreview } from "@/components/markdown-preview";
+import { Button } from "@/components/ui/button";
+import { Card as UICard, CardContent, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { useCards } from '@/lib/hooks/useCards';
+
+import type { Card } from '@/lib/api';
 
 export default function ReviewCardPage({
   params,
@@ -24,7 +26,7 @@ export default function ReviewCardPage({
   const [showAnswer, setShowAnswer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewing, setIsReviewing] = useState(false);
-  const [flipAnimation, setFlipAnimation] = useState(false);
+  const [, setFlipAnimation] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,7 +51,7 @@ export default function ReviewCardPage({
     return () => {
       isMounted = false;
     };
-  }, [id, router]);
+  }, [id, router, getById]);
 
   const handleRating = async (rating: number) => {
     if (!card || isReviewing) return;

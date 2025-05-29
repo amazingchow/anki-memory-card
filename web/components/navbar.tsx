@@ -1,10 +1,10 @@
 'use client';
 
+import { BarChart2, LogOut, List, Settings, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import useAuth from '@/lib/hooks/useAuth';
-import { BarChart2, LogOut, List, Settings, Plus } from 'lucide-react';
-import { ThemeToggle } from './theme-toggle';
+
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +14,9 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import useAuth from '@/lib/hooks/useAuth';
+
+
 
 export default function Navbar() {
   const pathname = usePathname();

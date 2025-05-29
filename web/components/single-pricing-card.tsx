@@ -1,14 +1,17 @@
 "use client"
 
+import { motion, useInView, AnimatePresence } from "framer-motion"
+import { Star } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+
 import type { LucideIcon } from "lucide-react"
-import { Star } from "lucide-react"
-import { motion, useInView, AnimatePresence } from "framer-motion"
-import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
 
 export interface Testimonial {
   id: number
@@ -351,9 +354,11 @@ function SinglePricingCardContent({
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <div className="h-8 w-8 rounded-full overflow-hidden">
-                              <img
+                              <Image
                                 src={testimonial.avatar || "/placeholder.svg"}
                                 alt={`${testimonial.name}'s avatar`}
+                                width={32}
+                                height={32}
                                 className="w-full h-full object-cover"
                               />
                             </div>

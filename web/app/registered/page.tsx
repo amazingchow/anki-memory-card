@@ -1,9 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
-import { Card, CardHeader, CardFooter } from "@/components/ui/card";
+import Link from 'next/link';
+
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardFooter } from "@/components/ui/card";
 
 export default function RegisterSuccessPage() {
   return (

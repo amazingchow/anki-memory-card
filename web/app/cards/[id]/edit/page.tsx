@@ -1,17 +1,18 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCards } from '@/lib/hooks/useCards';
-import type { Card } from '@/lib/api';
+import { useState, useEffect, use } from 'react';
+
+import { ExpandableTextarea } from "@/components/expandable-textarea";
+import { MarkdownPreview } from "@/components/markdown-preview";
+import { Button } from "@/components/ui/button";
 import { Card as UICard, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { MarkdownPreview } from "@/components/markdown-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ExpandableTextarea } from "@/components/expandable-textarea";
+import { useCards } from '@/lib/hooks/useCards';
+
+import type { Card } from '@/lib/api';
 
 export default function EditCardPage({
   params,
@@ -45,7 +46,7 @@ export default function EditCardPage({
     };
 
     fetchCard();
-  }, [id]);
+  }, [id, getById, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

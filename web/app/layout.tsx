@@ -27,7 +27,7 @@ export default function RootLayout({
           <div className="min-h-screen bg-background">
             <SidebarProvider>
               <NavbarWrapper />
-              <main className="flex-1 flex justify-center">
+              <main className="flex-1 flex justify-center md:pt-0 pt-14">
                 <div className="w-full">
                   {children}
                 </div>

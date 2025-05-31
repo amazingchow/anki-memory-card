@@ -6,7 +6,8 @@ import {
   removeAllCookies,
 } from '@/lib/cookies';
 
-const API_URL = 'http://localhost:8000';
+// const API_URL = 'http://localhost:8000';
+const API_URL = 'http://192.168.0.140:8000';
 
 const api = axios.create({
   baseURL: API_URL,

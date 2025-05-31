@@ -1,10 +1,11 @@
 'use client';
 
-import { BarChart2, LogOut, List, Settings, Plus } from 'lucide-react';
+import { BarChart2, LogOut, List, Settings, Plus, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
@@ -13,14 +14,14 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import useAuth from '@/lib/hooks/useAuth';
-
-
 
 export default function Navbar() {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { toggleSidebar, isMobile } = useSidebar();
 
   const isActive = (path: string) => pathname === path;
   const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -30,8 +31,18 @@ export default function Navbar() {
   }
 
   return (
-      <Sidebar>
-        <SidebarHeader className="flex flex-row items-center justify-between px-4 py-2">
+    <>
+      {isMobile && (
+        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2 bg-background border-b">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle menu</span>
+          </Button>
           <Link
             href="/cards"
             className="text-lg font-semibold text-primary hover:text-primary/90 flex items-center"
@@ -41,6 +52,23 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
           </div>
+        </div>
+      )}
+      <Sidebar>
+        <SidebarHeader className="flex flex-row items-center justify-between px-4 py-2">
+        {!isMobile && (
+          <>
+            <Link
+              href="/cards"
+              className="text-lg font-semibold text-primary hover:text-primary/90 flex items-center"
+            >
+              <span className="font-bold">Anki AI</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+            </div>
+          </>
+        )}
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
@@ -109,5 +137,6 @@ export default function Navbar() {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
+    </>
   );
 } 

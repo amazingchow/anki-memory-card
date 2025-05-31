@@ -34,7 +34,7 @@ export default function Navbar() {
         <SidebarHeader className="flex flex-row items-center justify-between px-4 py-2">
           <Link
             href="/cards"
-            className="text-lg font-semibold text-primary hover:text-primary/90 chinese-calligraphy flex items-center"
+            className="text-lg font-semibold text-primary hover:text-primary/90 flex items-center"
           >
             <span className="font-bold">Anki AI</span>
           </Link>

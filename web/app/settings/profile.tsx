@@ -17,7 +17,7 @@ interface ProfileProps {
 
 export function Profile({ profile, onProfileChange, onSave }: ProfileProps) {
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Profile</CardTitle>
       </CardHeader>

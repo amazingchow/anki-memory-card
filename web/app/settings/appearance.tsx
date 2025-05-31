@@ -21,7 +21,7 @@ export function Appearance({ selectedColorTheme, onColorThemeChange }: Appearanc
   ];
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Appearance</CardTitle>
       </CardHeader>

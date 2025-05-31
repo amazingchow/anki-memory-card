@@ -224,18 +224,16 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container max-w-[800px] mx-auto py-8">
       <h2 className="text-2xl font-bold mb-8">Settings</h2>
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <div className="flex justify-center mb-8">
-          <TabsList>
-            {TAB_ITEMS.map(item => (
-              <TabsTrigger key={item.key} value={item.key}>
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <TabsList className="grid w-full grid-cols-4">
+          {TAB_ITEMS.map(item => (
+            <TabsTrigger key={item.key} value={item.key}>
+              {item.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
         <TabsContent value="profile">
           <Profile
             profile={{ username: profile.username, email: profile.email, bio: profile.bio }}

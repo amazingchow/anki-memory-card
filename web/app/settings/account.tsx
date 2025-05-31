@@ -17,7 +17,7 @@ interface AccountProps {
 
 export function Account({ profile, onCancelSubscription, onDeleteAccount }: AccountProps) {
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Account</CardTitle>
       </CardHeader>

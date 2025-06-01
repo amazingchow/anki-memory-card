@@ -11,7 +11,9 @@ export default function NavbarWrapper() {
   const isPublicPage = pathname === '/terms' 
     || pathname === '/privacy'
     || pathname === '/registered' 
-    || pathname === '/activate';  
+    || pathname === '/activate'
+    || pathname === '/forgot-password'
+    || pathname === '/reset-password';  
   if (isAuthPage || isPublicPage) {
     return null;
   }

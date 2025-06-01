@@ -35,6 +35,15 @@ local_run: lint ### Run the application locally.
 		--reload \
 		app:app
 
+.PHONY: local_run_celery_worker
+local_run_celery_worker: ### Run the celery worker locally.
+	@uv run celery \
+		--workdir=./ \
+		--app=celery_worker.celery_inst worker \
+		--concurrency=1 \
+		--pool=prefork \
+		--loglevel=DEBUG
+
 .PHONY: test
 test: ### Run the tests. (pytest, pytest-asyncio)
 	@(export PYTHONPATH=${PYTHONPATH}:${CURR_DIR} && poetry run pytest -vv || true)

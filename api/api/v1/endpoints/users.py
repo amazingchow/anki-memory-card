@@ -5,13 +5,24 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger as loguru_logger
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import get_current_active_user
 from corelib.config import settings
 from corelib.db import get_sqlite_db
-from corelib.email import send_activation_email
-from corelib.security import create_access_token, decrypt_aes, verify_password
+from corelib.security import (
+    create_token,
+    decrypt_aes,
+    get_password_hash,
+    parse_token,
+    verify_password
+)
+from corelib.tasks.email_task_api import (
+    send_activation_email_task,
+    send_password_reset_email_task
+)
+from corelib.tasks.helper import new_task_params
 from crud.crud_user import (
     cancel_subscription,
     create_user,
@@ -20,6 +31,7 @@ from crud.crud_user import (
     update_user_profile
 )
 from models.user import User
+from schemas.user import PasswordResetRequest
 from schemas.user import User as UserSchema
 from schemas.user import UserCreate, UserUpdate
 
@@ -49,7 +61,7 @@ async def h_login(
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
-        "access_token": create_access_token(
+        "access_token": create_token(
             data={"sub": user.email}, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
@@ -76,11 +88,17 @@ async def h_create_user_endpoint(
     new_user = await create_user(db=db, user=user)
     
     # Send activation email
-    resend_id, ok = send_activation_email(user.email)
-    if not ok:
-        loguru_logger.error(f"Failed to send activation email to {user.email}")
-    else:
-        loguru_logger.info(f"Activation email sent to {user.email} with resend_id: {resend_id}")
+    _task_id, task_params = new_task_params(
+        email=user.email
+    )
+    task = send_activation_email_task.apply_async(
+        (task_params,),
+        task_id=_task_id,
+        countdown=3,
+        expires=3600
+    )
+    task_id = task.id
+    loguru_logger.info(f"Activation email sent to {user.email} with task_id: {task_id}")
     
     return new_user
 
@@ -167,3 +185,80 @@ async def h_delete_user_account(
     Delete user account.
     """
     return await delete_user(db=db, user_id=current_user.id)
+
+
+@router.post("/request-password-reset")
+async def request_password_reset(
+    email: EmailStr = Query(..., description="The email address to reset password for"),
+    db: AsyncSession = Depends(get_sqlite_db)
+):
+    """
+    Request a password reset email.
+    """
+    user = await get_user_by_email(db, email=email)
+    if not user:
+        # Don't reveal that the email doesn't exist
+        return {"message": "If your email is registered, you will receive a password reset link."}
+    # Generate reset token
+    reset_token = create_token(
+        data={"sub": user.email, "type": "password_reset"},
+        expires_delta=timedelta(hours=1)
+    )
+    # Send reset email
+    _task_id, task_params = new_task_params(
+        email=user.email,
+        reset_token=reset_token
+    )
+    task = send_password_reset_email_task.apply_async(
+        (task_params,),
+        task_id=_task_id,
+        countdown=3,
+        expires=3600
+    )
+    task_id = task.id
+    loguru_logger.info(f"Password reset email sent to {user.email} with task_id: {task_id}")
+    
+    return {"message": "If your email is registered, you will receive a password reset link."}
+
+
+@router.post("/reset-password")
+async def reset_password(
+    password_reset: PasswordResetRequest,
+    db: AsyncSession = Depends(get_sqlite_db)
+):
+    """
+    Reset password using the reset token.
+    """
+    # Verify token
+    payload = parse_token(password_reset.token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired token"
+        )
+    if payload.get("type") != "password_reset":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token"
+        )
+
+    email = payload.get("sub")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token"
+        )
+
+    # Get user
+    user = await get_user_by_email(db, email=email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Update password
+    user.hashed_password = get_password_hash(password_reset.new_password)
+    await db.commit()
+
+    return {"message": "Password has been reset successfully."}

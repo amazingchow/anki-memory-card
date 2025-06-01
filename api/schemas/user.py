@@ -33,3 +33,8 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+
+
+class PasswordResetRequest(BaseModel):
+    token: str
+    new_password: str

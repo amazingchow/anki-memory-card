@@ -83,10 +83,10 @@ def init_task_logger():
         "task_id": "", "uid": ""
     })
     # add new logger
-    if settings.TASK_LOG_PRINTER.lower() == "disk" and len(settings.TASK_LOG_PRINTER_FILENAME) > 0:
+    if settings.CELERY_WORKER_LOG_PRINTER.lower() == "disk" and len(settings.CELERY_WORKER_LOG_PRINTER_FILENAME) > 0:
         loguru_logger.add(
-            sink=settings.TASK_LOG_PRINTER_FILENAME,
-            level=settings.LOG_LEVEL.upper(),
+            sink=settings.CELERY_WORKER_LOG_PRINTER_FILENAME,
+            level=settings.CELERY_WORKER_LOG_LEVEL.upper(),
             format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
                 "<level>{level: <8}</level> | "
                 "<red>task_id={extra[task_id]}</red> <red>uid={extra[uid]}</red> | "

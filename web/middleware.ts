@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
@@ -8,7 +9,9 @@ export function middleware(request: NextRequest) {
   const isPublicPage = request.nextUrl.pathname.startsWith('/terms') ||
                       request.nextUrl.pathname.startsWith('/privacy') ||
                       request.nextUrl.pathname.startsWith('/registered') ||
-                      request.nextUrl.pathname.startsWith('/activate');
+                      request.nextUrl.pathname.startsWith('/activate') ||
+                      request.nextUrl.pathname.startsWith('/forgot-password') ||
+                      request.nextUrl.pathname.startsWith('/reset-password');
 
   // Allow access to public pages without authentication
   if (isPublicPage) {

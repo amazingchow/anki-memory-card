@@ -6,8 +6,8 @@ import {
   removeAllCookies,
 } from '@/lib/cookies';
 
-// const API_URL = 'http://localhost:8000';
-const API_URL = 'http://192.168.0.140:8000';
+const API_URL = 'http://localhost:8000';
+// const API_URL = 'http://192.168.0.140:8000';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -109,6 +109,16 @@ export const auth = {
 
   activate: async (token: string) => {
     const response = await api.get(`/api/v1/users/activate?token=${token}`);
+    return response.data;
+  },
+
+  requestPasswordReset: async (email: string) => {
+    const response = await api.post(`/api/v1/users/request-password-reset?email=${email}`);
+    return response.data;
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    const response = await api.post('/api/v1/users/reset-password', { token, new_password: newPassword });
     return response.data;
   },
 };

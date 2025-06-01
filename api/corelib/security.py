@@ -7,6 +7,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from jose import exceptions as jose_exceptions
 from jose import jwt
+from loguru import logger as loguru_logger
 from passlib.context import CryptContext
 
 from corelib.config import settings
@@ -18,7 +19,9 @@ AES_KEY = settings.SECRET_KEY[:32].encode()  # Use first 32 bytes of SECRET_KEY
 AES_IV = bytes([0x1F, 0x2E, 0x3D, 0x4C, 0x5B, 0x6A, 0x79, 0x88, 0x97, 0xA6, 0xB5, 0xC4, 0xD3, 0xE2, 0xF1, 0x00])  # Complex fixed IV
 
 
-def encrypt_aes(text: str) -> str:
+def encrypt_aes(
+    text: str
+) -> str:
     """
     Encrypt text using AES encryption.
     
@@ -34,7 +37,9 @@ def encrypt_aes(text: str) -> str:
     return base64.b64encode(encrypted_text).decode()
 
 
-def decrypt_aes(encrypted_text: str) -> str:
+def decrypt_aes(
+    encrypted_text: str
+) -> str:
     """
     Decrypt AES encrypted text.
     
@@ -63,7 +68,7 @@ def verify_password(
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(
+def create_token(
     data: dict,
     expires_delta: Optional[timedelta] = None
 ) -> str:
@@ -77,9 +82,12 @@ def create_access_token(
     return encoded_jwt
 
 
-def parse_token(token: str) -> bool | dict:
+def parse_token(
+    token: str
+) -> bool | dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
-    except jose_exceptions.JWTError:
+    except jose_exceptions.JWTError as exc:
+        loguru_logger.error(f"Failed to parse token: {str(exc)}")
         return False

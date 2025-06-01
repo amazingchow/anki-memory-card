@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 import json
+import time
 from datetime import datetime, timedelta, timezone
 
+import celery
 import resend
 from loguru import logger as loguru_logger
 
@@ -29,26 +32,29 @@ def send_email(email: str, subject: str, html_content: str) -> tuple[str | None,
         return (None, False)
 
 
-def send_activation_email(email: str) -> bool:
-    """
-    Send activation email to new registered user.
+class SendActivationEmailTask(celery.Task):
+    name = "send-activation-email-task"
     
-    Args:
-        email: Recipient's email address
-        
-    Returns:
-        bool: True if email was sent successfully, False otherwise
-    """
-    subject = "Welcome to Anki AI - Activate Your Account"
-    # Create data with expiration time
-    expiration_time = datetime.now(timezone.utc) + timedelta(hours=24)
-    data = {
-        "email": email,
-        "expires_at": expiration_time.isoformat()
-    }
-    # Encrypt the data
-    encrypted_data = encrypt_aes(json.dumps(data))
-    html_content = f"""
+    def run(self, task_params: str):
+        params = json.loads(task_params)
+        task_id = params["task_id"]
+        email = params["email"]
+
+        with loguru_logger.contextualize(task_id=task_id):
+            loguru_logger.info("To exec task...")
+            loguru_logger.debug(f"Task params: {params}.")
+            start_at = time.perf_counter()
+            try:
+                subject = "Welcome to Anki AI - Activate Your Account"
+                # Create data with expiration time
+                expiration_time = datetime.now(timezone.utc) + timedelta(hours=24)
+                data = {
+                    "email": email,
+                    "expires_at": expiration_time.isoformat()
+                }
+                # Encrypt the data
+                encrypted_data = encrypt_aes(json.dumps(data))
+                html_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -120,23 +126,28 @@ def send_activation_email(email: str) -> bool:
 </body>
 </html>
 """
-    _, success = send_email(email, subject, html_content)
-    return success
+                send_email(email, subject, html_content)
+            finally:
+                end_at = time.perf_counter()
+                loguru_logger.info(f"Finished task, used time: {end_at - start_at:.3f}s.")
 
 
-def send_password_reset_email(email: str, reset_token: str) -> bool:
-    """
-    Send password reset email to user.
+class SendPasswordResetEmailTask(celery.Task):
+    name = "send-password-reset-email-task"
+    
+    def run(self, task_params: str):
+        params = json.loads(task_params)
+        task_id = params["task_id"]
+        email = params["email"]
+        reset_token = params["reset_token"]
 
-    Args:
-        email: Recipient's email address
-        reset_token: Token for password reset
-
-    Returns:
-        bool: True if email was sent successfully, False otherwise
-    """
-    subject = "Reset Your Anki AI Password"
-    html_content = f"""
+        with loguru_logger.contextualize(task_id=task_id):
+            loguru_logger.info("To exec task...")
+            loguru_logger.debug(f"Task params: {params}.")
+            start_at = time.perf_counter()
+            try:
+                subject = "Reset Your Anki AI Password"
+                html_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -208,5 +219,7 @@ def send_password_reset_email(email: str, reset_token: str) -> bool:
 </body>
 </html>
 """
-    _, success = send_email(email, subject, html_content)
-    return success
+                send_email(email, subject, html_content)
+            finally:
+                end_at = time.perf_counter()
+                loguru_logger.info(f"Finished task, used time: {end_at - start_at:.3f}s.")

@@ -108,7 +108,7 @@ export default function LoginPage() {
             )}
              <div className="text-sm text-right">
                 <Link
-                    href="/forgot-password" // TODO: Implement forgot password logic
+                    href="/forgot-password"
                     className="font-medium text-primary hover:text-primary/90 transition-colors hover:underline"
                   >
                     Forgot password?

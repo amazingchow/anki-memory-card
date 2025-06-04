@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import time
 from datetime import datetime, timedelta, timezone
@@ -12,19 +11,19 @@ from corelib.security import encrypt_aes
 
 
 def send_email(email: str, subject: str, html_content: str) -> tuple[str | None, bool]:
-    """
-    Send email.
-    """
+    """Send email."""
     try:
         resend.api_key = settings.RESEND_API_KEY
-        response = resend.Emails.send({
-            "from": settings.RESEND_FROM_EMAIL,
-            "to": email,
-            "subject": subject,
-            "html": html_content
-        })
-        if (response is not None) and (response['id'] is not None):
-            return (response['id'], True)
+        response = resend.Emails.send(
+            {
+                "from": settings.RESEND_FROM_EMAIL,
+                "to": email,
+                "subject": subject,
+                "html": html_content,
+            }
+        )
+        if (response is not None) and (response["id"] is not None):
+            return (response["id"], True)
         else:
             return (None, False)
     except Exception as exc:
@@ -34,7 +33,7 @@ def send_email(email: str, subject: str, html_content: str) -> tuple[str | None,
 
 class SendActivationEmailTask(celery.Task):
     name = "send-activation-email-task"
-    
+
     def run(self, task_params: str):
         params = json.loads(task_params)
         task_id = params["task_id"]
@@ -48,10 +47,7 @@ class SendActivationEmailTask(celery.Task):
                 subject = "Welcome to Anki AI - Activate Your Account"
                 # Create data with expiration time
                 expiration_time = datetime.now(timezone.utc) + timedelta(hours=24)
-                data = {
-                    "email": email,
-                    "expires_at": expiration_time.isoformat()
-                }
+                data = {"email": email, "expires_at": expiration_time.isoformat()}
                 # Encrypt the data
                 encrypted_data = encrypt_aes(json.dumps(data))
                 html_content = f"""
@@ -129,12 +125,14 @@ class SendActivationEmailTask(celery.Task):
                 send_email(email, subject, html_content)
             finally:
                 end_at = time.perf_counter()
-                loguru_logger.info(f"Finished task, used time: {end_at - start_at:.3f}s.")
+                loguru_logger.info(
+                    f"Finished task, used time: {end_at - start_at:.3f}s."
+                )
 
 
 class SendPasswordResetEmailTask(celery.Task):
     name = "send-password-reset-email-task"
-    
+
     def run(self, task_params: str):
         params = json.loads(task_params)
         task_id = params["task_id"]
@@ -222,4 +220,6 @@ class SendPasswordResetEmailTask(celery.Task):
                 send_email(email, subject, html_content)
             finally:
                 end_at = time.perf_counter()
-                loguru_logger.info(f"Finished task, used time: {end_at - start_at:.3f}s.")
+                loguru_logger.info(
+                    f"Finished task, used time: {end_at - start_at:.3f}s."
+                )

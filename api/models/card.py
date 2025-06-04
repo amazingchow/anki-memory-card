@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -21,10 +20,16 @@ class Card(Base):
     tags = Column(String, default="", comment="标签")
     next_review = Column(DateTime(timezone=True), comment="下次复习时间")
     review_count = Column(Integer, default=0, comment="复习次数")
-    status = Column(String, default="learning", comment="学习状态")  # learning, reviewing, mastered
+    status = Column(
+        String, default="learning", comment="学习状态"
+    )  # learning, reviewing, mastered
     owner_id = Column(Integer, ForeignKey("users.id"), comment="用户ID")
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="创建时间")
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), comment="更新时间")
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), comment="创建时间"
+    )
+    updated_at = Column(
+        DateTime(timezone=True), onupdate=func.now(), comment="更新时间"
+    )
 
     owner = relationship("User", back_populates="cards")
     reviews = relationship("Review", back_populates="card")
@@ -35,8 +40,12 @@ class Review(Base):
 
     id = Column(Integer, primary_key=True, index=True, comment="复习ID")
     card_id = Column(Integer, ForeignKey("cards.id"), comment="卡片ID")
-    review_date = Column(DateTime(timezone=True), server_default=func.now(), comment="复习时间")
-    rating = Column(Integer, comment="复习评分")  # 1-5 rating of how well the user remembered
+    review_date = Column(
+        DateTime(timezone=True), server_default=func.now(), comment="复习时间"
+    )
+    rating = Column(
+        Integer, comment="复习评分"
+    )  # 1-5 rating of how well the user remembered
     next_interval = Column(Integer, comment="下次复习间隔")  # days until next review
 
     card = relationship("Card", back_populates="reviews")

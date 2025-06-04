@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger as loguru_logger
-from starlette.responses import JSONResponse
 
 from api.v1.api import api_router
 from corelib.config import settings
@@ -19,14 +17,16 @@ from models.base import Base
 async def lifespan(app: FastAPI):
     init_global_logger()
 
-    loguru_logger.info("--------------------------------------------------------------------------")
+    loguru_logger.info(
+        "--------------------------------------------------------------------------"
+    )
     loguru_logger.info("Application startup...")
     # Create database tables
     async with sqlite_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    
+
     yield
-    
+
     loguru_logger.info("Application shutdown...")
 
 
@@ -34,7 +34,7 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 # --- 路由 ---
 app.include_router(api_router, prefix=settings.API_V1_STR)

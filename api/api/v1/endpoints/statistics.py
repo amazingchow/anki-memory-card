@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,9 +13,7 @@ router = APIRouter()
 @router.get("/", response_model=Statistics)
 async def h_get_user_statistics(
     current_user: User = Depends(get_current_active_user),
-    db: AsyncSession = Depends(get_sqlite_db)
+    db: AsyncSession = Depends(get_sqlite_db),
 ):
-    """
-    Get user statistics.
-    """
+    """Get user statistics."""
     return await get_statistics(db=db, user_id=current_user.id)

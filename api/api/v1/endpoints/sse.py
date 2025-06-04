@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from fastapi import APIRouter, Depends, Request
 from sse_starlette.sse import EventSourceResponse
 
@@ -11,8 +10,7 @@ router = APIRouter()
 
 @router.get("/")
 async def sse_endpoint(
-    request: Request,
-    current_user: User = Depends(get_current_active_user)
+    request: Request, current_user: User = Depends(get_current_active_user)
 ):
     """SSE 端点，用于建立服务器发送事件连接"""
     return EventSourceResponse(event_generator(request))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import json
 from typing import Any, Dict, Optional
@@ -14,28 +13,22 @@ async def event_generator(request: Request, connection_type: Optional[str] = Non
     # 为每个客户端创建一个唯一的连接ID
     connection_id = str(uuid4())
     queue = asyncio.Queue()
-    sse_connections[connection_id] = {
-        "queue": queue,
-        "type": connection_type
-    }
-    
+    sse_connections[connection_id] = {"queue": queue, "type": connection_type}
+
     try:
         while True:
             if await request.is_disconnected():
                 break
             # 等待新消息
             message = await queue.get()
-            yield {
-                "event": "message",
-                "data": json.dumps(message)
-            }
+            yield {"event": "message", "data": json.dumps(message)}
     finally:
         sse_connections.pop(connection_id, None)
 
 
 async def broadcast_message(message: Dict, message_type: Optional[str] = None):
     """向所有连接的客户端广播消息
-    
+
     Args:
         message: 要广播的消息
         message_type: 消息类型，如果指定则只发送给该类型的连接
@@ -47,7 +40,7 @@ async def broadcast_message(message: Dict, message_type: Optional[str] = None):
 
 async def send_message(connection_id: str, message: Dict):
     """向特定连接发送消息
-    
+
     Args:
         connection_id: 连接ID
         message: 要发送的消息

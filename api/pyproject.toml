@@ -2,8 +2,11 @@
 name = "anki-memory-card"
 version = "0.1.0"
 description = "Anki AI"
+authors = [
+    { name = "Adam Zhou", email = "summychou@gmail.com" },
+]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "aiomysql>=0.2.0",
     "aiosqlite>=0.19.0",
@@ -28,3 +31,31 @@ dependencies = [
     "sse-starlette>=2.3.6",
     "uvicorn>=0.34.2",
 ]
+
+[dependency-groups]
+dev = [
+    "codespell>=2.4.1",
+    "pytest>=8.4.0",
+    "ruff>=0.11.12",
+]
+
+[tool.ruff]
+lint.select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "T201",
+    "UP",
+]
+lint.ignore = [
+    "UP006",
+    "UP007",
+    # We actually do want to import from typing_extensions
+    "UP035",
+    "E501",
+    "T201",
+]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "UP"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"

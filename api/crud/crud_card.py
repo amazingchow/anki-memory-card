@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 
 from sqlalchemy import select
@@ -9,35 +8,34 @@ from models.card import Card
 from schemas.card import CardCreate, CardUpdate
 
 
-async def get_due_cards(db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100):
+async def get_due_cards(
+    db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100
+):
     result = await db.execute(
-        select(Card).filter(
-            Card.owner_id == user_id,
-            Card.next_review <= datetime.now()
-        ).offset(skip).limit(limit)
+        select(Card)
+        .filter(Card.owner_id == user_id, Card.next_review <= datetime.now())
+        .offset(skip)
+        .limit(limit)
     )
     return result.scalars().all()
 
 
-async def get_user_cards(db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100):
+async def get_user_cards(
+    db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100
+):
     result = await db.execute(
-        select(Card).filter(
-            Card.owner_id == user_id
-        ).offset(skip).limit(limit))
+        select(Card).filter(Card.owner_id == user_id).offset(skip).limit(limit)
+    )
     return result.scalars().all()
 
 
 async def get_cards(db: AsyncSession, skip: int = 0, limit: int = 100):
-    result = await db.execute(
-        select(Card).offset(skip).limit(limit))
+    result = await db.execute(select(Card).offset(skip).limit(limit))
     return result.scalars().all()
 
 
 async def get_card(db: AsyncSession, card_id: int):
-    result = await db.execute(
-        select(Card).filter(
-            Card.id == card_id
-        ))
+    result = await db.execute(select(Card).filter(Card.id == card_id))
     return result.scalar_one_or_none()
 
 
@@ -47,7 +45,7 @@ async def create_card(db: AsyncSession, card: CardCreate, user_id: int):
             **card.model_dump(),
             owner_id=user_id,
             next_review=datetime.now(),
-            status="learning"
+            status="learning",
         )
         db.add(db_card)
         await db.commit()

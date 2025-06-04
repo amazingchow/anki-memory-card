@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import base64
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -16,18 +15,34 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # AES encryption key and IV
 AES_KEY = settings.SECRET_KEY[:32].encode()  # Use first 32 bytes of SECRET_KEY
-AES_IV = bytes([0x1F, 0x2E, 0x3D, 0x4C, 0x5B, 0x6A, 0x79, 0x88, 0x97, 0xA6, 0xB5, 0xC4, 0xD3, 0xE2, 0xF1, 0x00])  # Complex fixed IV
+AES_IV = bytes(
+    [
+        0x1F,
+        0x2E,
+        0x3D,
+        0x4C,
+        0x5B,
+        0x6A,
+        0x79,
+        0x88,
+        0x97,
+        0xA6,
+        0xB5,
+        0xC4,
+        0xD3,
+        0xE2,
+        0xF1,
+        0x00,
+    ]
+)  # Complex fixed IV
 
 
-def encrypt_aes(
-    text: str
-) -> str:
-    """
-    Encrypt text using AES encryption.
-    
+def encrypt_aes(text: str) -> str:
+    """Encrypt text using AES encryption.
+
     Args:
         text: Text to encrypt
-        
+
     Returns:
         str: Base64 encoded encrypted text
     """
@@ -37,15 +52,12 @@ def encrypt_aes(
     return base64.b64encode(encrypted_text).decode()
 
 
-def decrypt_aes(
-    encrypted_text: str
-) -> str:
-    """
-    Decrypt AES encrypted text.
-    
+def decrypt_aes(encrypted_text: str) -> str:
+    """Decrypt AES encrypted text.
+
     Args:
         encrypted_text: Base64 encoded encrypted text
-        
+
     Returns:
         str: Decrypted text
     """
@@ -55,38 +67,32 @@ def decrypt_aes(
     return unpad(decrypted_padded, AES.block_size).decode()
 
 
-def get_password_hash(
-    password: str
-) -> str:
+def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(
-    plain_password: str,
-    hashed_password: str
-) -> bool:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_token(
-    data: dict,
-    expires_delta: Optional[timedelta] = None
-) -> str:
+def create_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=86400)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return encoded_jwt
 
 
-def parse_token(
-    token: str
-) -> bool | dict:
+def parse_token(token: str) -> bool | dict:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         return payload
     except jose_exceptions.JWTError as exc:
         loguru_logger.error(f"Failed to parse token: {str(exc)}")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import uuid
 
@@ -9,7 +8,4 @@ def new_task_id() -> str:
 
 def new_task_params(**kwargs) -> tuple[str, str]:
     task_id = new_task_id()
-    return (task_id, json.dumps({
-        "task_id": task_id,
-        **kwargs
-    }))
+    return (task_id, json.dumps({"task_id": task_id, **kwargs}))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import celery
 
 from corelib.config import settings
@@ -11,10 +10,7 @@ def init_runtime_env():
 
 
 def init_celery():
-    registered_tasks = [
-        SendActivationEmailTask,
-        SendPasswordResetEmailTask
-    ]
+    registered_tasks = [SendActivationEmailTask, SendPasswordResetEmailTask]
     celery_inst = celery.Celery(
         __name__,
         broker=settings.CELERY_BROKER_URL,
@@ -40,7 +36,7 @@ class CeleryManager:
             init_runtime_env()
             cls._celery_inst = init_celery()
         return cls._instance
-    
+
     def get_celery_inst(self):
         return self._celery_inst
 

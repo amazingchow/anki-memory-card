@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import celery
 
 from corelib.config import settings
@@ -27,7 +26,7 @@ class CeleryManager:
             cls._instance = cls.__new__(cls)
             cls._celery_inst = init_celery()
         return cls._instance
-    
+
     def get_celery_inst(self):
         return self._celery_inst
 

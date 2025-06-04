@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from typing import List
 
 from fastapi.security.api_key import APIKeyHeader
@@ -123,5 +122,9 @@ except ValidationError as exc:
 
 # Auth headers
 auth_header_uid = APIKeyHeader(name="x-sec-uid", scheme_name="header for user id")
-auth_header_account = APIKeyHeader(name="x-sec-account", scheme_name="header for user account")
-auth_header_token = APIKeyHeader(name="x-sec-token", scheme_name="header for access token")
+auth_header_account = APIKeyHeader(
+    name="x-sec-account", scheme_name="header for user account"
+)
+auth_header_token = APIKeyHeader(
+    name="x-sec-token", scheme_name="header for access token"
+)

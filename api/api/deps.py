@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,12 +8,13 @@ from corelib.security import parse_token
 from crud.crud_user import get_user_by_email
 from models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/access-token")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+)
 
 
 async def get_current_user(
-    db: AsyncSession = Depends(get_sqlite_db),
-    token: str = Depends(oauth2_scheme)
+    db: AsyncSession = Depends(get_sqlite_db), token: str = Depends(oauth2_scheme)
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

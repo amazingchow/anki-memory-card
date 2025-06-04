@@ -20,15 +20,8 @@ FIELD_SEPARATOR = "\x1f"
 
 
 def parse_apkg(apkg_path):
-    """
-    解析 Anki .apkg 文件并提取信息。
-    """
-    extracted_data = {
-        "decks": {},
-        "models": {},
-        "notes": [],
-        "media_files": {}
-    }
+    """解析 Anki .apkg 文件并提取信息。"""
+    extracted_data = {"decks": {}, "models": {}, "notes": [], "media_files": {}}
 
     # 创建一个临时目录来解压文件
     temp_dir = tempfile.mkdtemp()
@@ -36,13 +29,13 @@ def parse_apkg(apkg_path):
 
     try:
         # 1. 解压缩 .apkg 文件
-        with zipfile.ZipFile(apkg_path, 'r') as zf:
+        with zipfile.ZipFile(apkg_path, "r") as zf:
             zf.extractall(temp_dir)
 
         # 2. 处理 media 文件 (如果存在)
         media_json_path = os.path.join(temp_dir, "media")
         if os.path.exists(media_json_path):
-            with open(media_json_path, 'r', encoding='utf-8') as f:
+            with open(media_json_path, encoding="utf-8") as f:
                 media_mapping = json.load(f)
                 extracted_data["media_files"] = media_mapping
                 print(f"[*] 找到 {len(media_mapping)} 个媒体文件映射。")
@@ -52,7 +45,7 @@ def parse_apkg(apkg_path):
         # 3. 确定数据库文件名
         db_path_anki2 = os.path.join(temp_dir, "collection.anki2")
         db_path_anki21 = os.path.join(temp_dir, "collection.anki21")
-        
+
         db_path = None
         if os.path.exists(db_path_anki21):
             db_path = db_path_anki21
@@ -61,7 +54,9 @@ def parse_apkg(apkg_path):
             db_path = db_path_anki2
             print("[*] 找到 collection.anki2 数据库。")
         else:
-            print("[!] 错误: 在解压的目录中未找到 collection.anki2 或 collection.anki21。")
+            print(
+                "[!] 错误: 在解压的目录中未找到 collection.anki2 或 collection.anki21。"
+            )
             return None
 
         # 4. 连接并查询 SQLite 数据库
@@ -76,7 +71,7 @@ def parse_apkg(apkg_path):
         for deck_id, deck_info in decks_data.items():
             extracted_data["decks"][deck_id] = {
                 "name": deck_info.get("name"),
-                "id": deck_info.get("id")  # deck_id 也是 id
+                "id": deck_info.get("id"),  # deck_id 也是 id
             }
         print(f"[*] 提取了 {len(extracted_data['decks'])} 个牌组信息。")
 
@@ -90,7 +85,7 @@ def parse_apkg(apkg_path):
             extracted_data["models"][model_id] = {
                 "name": model_info.get("name"),
                 "id": model_info.get("id"),  # model_id 也是 id
-                "field_names": field_names
+                "field_names": field_names,
             }
         print(f"[*] 提取了 {len(extracted_data['models'])} 个模型信息。")
 
@@ -100,12 +95,14 @@ def parse_apkg(apkg_path):
         notes_rows = cursor.fetchall()
         for note_row in notes_rows:
             note_id, model_id, flds_str, tags_str = note_row
-            
+
             # 解析字段
             fields_content = flds_str.split(FIELD_SEPARATOR)
-            
+
             # 获取模型名称和字段名称
-            model_info = extracted_data["models"].get(str(model_id))  # model_id 在 JSON 中是字符串键
+            model_info = extracted_data["models"].get(
+                str(model_id)
+            )  # model_id 在 JSON 中是字符串键
             model_name = model_info["name"] if model_info else "未知模型"
             field_names = model_info["field_names"] if model_info else []
 
@@ -114,13 +111,13 @@ def parse_apkg(apkg_path):
             for i, content in enumerate(fields_content):
                 field_name = field_names[i] if i < len(field_names) else f"字段_{i + 1}"
                 note_fields_dict[field_name] = content
-            
+
             note_data = {
                 "id": note_id,
                 "model_id": model_id,
                 "model_name": model_name,
                 "fields": note_fields_dict,
-                "tags": tags_str.strip().split(" ") if tags_str.strip() else []
+                "tags": tags_str.strip().split(" ") if tags_str.strip() else [],
             }
             extracted_data["notes"].append(note_data)
         print(f"[*] 提取了 {len(extracted_data['notes'])} 条笔记。")
@@ -148,13 +145,15 @@ def parse_apkg(apkg_path):
 
 if __name__ == "__main__":
     # 使用真实的 .apkg 文件路径
-    apkg_file_path = "/Users/adamzhou/Desktop/anki-memory-card/api/.apkg/大学英语四级.apkg"
-    
+    apkg_file_path = (
+        "/Users/adamzhou/Desktop/anki-memory-card/api/.apkg/大学英语四级.apkg"
+    )
+
     if os.path.exists(apkg_file_path):
         data = parse_apkg(apkg_file_path)
         if data:
             print("\n--- 解析结果 ---")
-            
+
             # # 创建数据库会话
             # db = SessionLocal()
             # try:
@@ -192,7 +191,7 @@ if __name__ == "__main__":
 
             #     db.commit()
             #     print("\n[*] 所有数据已成功导入到数据库")
-                
+
             # except Exception as e:
             #     db.rollback()
             #     print(f"[!] 导入数据时发生错误: {e}")

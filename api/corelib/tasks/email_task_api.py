@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from celery_client_instance import celery_inst as app
 
 

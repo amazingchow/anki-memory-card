@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import functools
 import random
@@ -22,6 +21,7 @@ def aretry_with_exponential_backoff(
     errors: tuple = (Exception,),
 ):
     """Retry a function with exponential backoff."""
+
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -36,7 +36,9 @@ def aretry_with_exponential_backoff(
                     return await func(*args, **kwargs)
                 # Retry on specified errors
                 except errors as exc:
-                    loguru_logger.error(f"caught error: {exc}, num_retries: {num_retries}.")
+                    loguru_logger.error(
+                        f"caught error: {exc}, num_retries: {num_retries}."
+                    )
                     # Increment retries
                     num_retries += 1
                     # Check if max retries has been reached
@@ -45,14 +47,22 @@ def aretry_with_exponential_backoff(
                             f"Maximum number of retries ({max_retries}) exceeded."
                         )
                     # Compute the delay
-                    delay = initial_delay * (exponential_base ** num_retries) * (1 + jitter * random.random())
+                    delay = (
+                        initial_delay
+                        * (exponential_base**num_retries)
+                        * (1 + jitter * random.random())
+                    )
                     # Sleep for the delay
-                    loguru_logger.info(f"create (backoff): sleeping for {delay} seconds.")
+                    loguru_logger.info(
+                        f"create (backoff): sleeping for {delay} seconds."
+                    )
                     await asyncio.sleep(delay)
                 # Raise exceptions for any errors not specified
                 except Exception as exc:
                     raise exc
+
         return wrapper
+
     return decorator
 
 
@@ -65,6 +75,7 @@ def retry_with_exponential_backoff(
     errors: tuple = (Exception,),
 ):
     """Retry a function with exponential backoff."""
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -79,7 +90,9 @@ def retry_with_exponential_backoff(
                     return func(*args, **kwargs)
                 # Retry on specified errors
                 except errors as exc:
-                    loguru_logger.error(f"caught error: {exc}, num_retries: {num_retries}.")
+                    loguru_logger.error(
+                        f"caught error: {exc}, num_retries: {num_retries}."
+                    )
                     # Increment retries
                     num_retries += 1
                     # Check if max retries has been reached
@@ -88,14 +101,22 @@ def retry_with_exponential_backoff(
                             f"Maximum number of retries ({max_retries}) exceeded."
                         )
                     # Compute the delay
-                    delay = initial_delay * (exponential_base ** num_retries) * (1 + jitter * random.random())
+                    delay = (
+                        initial_delay
+                        * (exponential_base**num_retries)
+                        * (1 + jitter * random.random())
+                    )
                     # Sleep for the delay
-                    loguru_logger.info(f"create (backoff): sleeping for {delay} seconds.")
+                    loguru_logger.info(
+                        f"create (backoff): sleeping for {delay} seconds."
+                    )
                     time.sleep(delay)
                 # Raise exceptions for any errors not specified
                 except Exception as exc:
                     raise exc
+
         return wrapper
+
     return decorator
 
 
@@ -107,6 +128,7 @@ def aretry_with_constant_backoff(
     errors: tuple = (Exception,),
 ):
     """Retry a function with constant backoff."""
+
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -120,7 +142,9 @@ def aretry_with_constant_backoff(
                     return await func(*args, **kwargs)
                 # Retry on specified errors
                 except errors as exc:
-                    loguru_logger.error(f"caught error: {exc}, num_retries: {num_retries}.")
+                    loguru_logger.error(
+                        f"caught error: {exc}, num_retries: {num_retries}."
+                    )
                     # Increment retries
                     num_retries += 1
                     # Check if max retries has been reached
@@ -131,12 +155,16 @@ def aretry_with_constant_backoff(
                     # Compute the delay
                     delay = constant_delay * (1 + jitter * random.random())
                     # Sleep for the delay
-                    loguru_logger.info(f"create (backoff): sleeping for {delay} seconds.")
+                    loguru_logger.info(
+                        f"create (backoff): sleeping for {delay} seconds."
+                    )
                     await asyncio.sleep(delay)
                 # Raise exceptions for any errors not specified
                 except Exception as exc:
                     raise exc
+
         return wrapper
+
     return decorator
 
 
@@ -148,6 +176,7 @@ def retry_with_constant_backoff(
     errors: tuple = (Exception,),
 ):
     """Retry a function with constant backoff."""
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -161,7 +190,9 @@ def retry_with_constant_backoff(
                     return func(*args, **kwargs)
                 # Retry on specified errors
                 except errors as exc:
-                    loguru_logger.error(f"caught error: {exc}, num_retries: {num_retries}.")
+                    loguru_logger.error(
+                        f"caught error: {exc}, num_retries: {num_retries}."
+                    )
                     # Increment retries
                     num_retries += 1
                     # Check if max retries has been reached
@@ -172,10 +203,14 @@ def retry_with_constant_backoff(
                     # Compute the delay
                     delay = constant_delay * (1 + jitter * random.random())
                     # Sleep for the delay
-                    loguru_logger.info(f"create (backoff): sleeping for {delay} seconds.")
+                    loguru_logger.info(
+                        f"create (backoff): sleeping for {delay} seconds."
+                    )
                     time.sleep(delay)
                 # Raise exceptions for any errors not specified
                 except Exception as exc:
                     raise exc
+
         return wrapper
+
     return decorator

@@ -1,23 +1,37 @@
 include .env
 export
 
-VERSION  := v0.1.0
-GIT_HASH := $(shell git rev-parse --short HEAD)
-SRC      := $(shell find . -type f -name '*.py' -not -path "./venv/*" -not -path "./.venv/*" -not -path "./migrations*/versions/*")
-CURR_DIR := $(shell pwd)
+VERSION 		:= v0.1.0
+GIT_HASH		:= $(shell git rev-parse --short HEAD)
+SRC_FILES   	:= $(shell find . -type f -name '*.py' \
+	-not -path "./venv/*" \
+	-not -path "./.venv/*" \
+	-not -path "./migrations*/versions/*" \
+)
+TEST_FILE 		:= tests/unit_tests/
+MYPY_CACHE      := .mypy_cache
+CURR_DIR		:= $(shell pwd)
+
+#################################
+# HELP
+#################################
 
 .PHONY: help
 help: ### Display this help screen.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-.PHONY: lint
-lint: ### Improve your code style. (pyflakes, pycodestyle, isort)
-	@echo "-> Running import sort..."
-	@isort --atomic --multi-line=VERTICAL_HANGING_INDENT ${SRC}
-	@echo "-> Running static code analysis..."
-	@pyflakes ${SRC}
-	@echo "-> Running code style check..."
-	@pycodestyle ${SRC} --ignore=E101,E121,E125,E126,E128,E131,E203,E265,E266,E402,E501,E702,E712,E722,W191,W293,W503
+#################################
+# LINTING AND FORMATTING
+#################################
+
+.PHONY: lint format
+lint format: ### Improve your code style. (ruff)
+	@uv run ruff check --fix $(PYTHON_FILES)
+	@uv run ruff format $(PYTHON_FILES)
+
+#################################
+# RUNNING APPLICATION
+#################################
 
 .PHONY: local_run
 local_run: lint ### Run the application locally.
@@ -44,9 +58,23 @@ local_run_celery_worker: ### Run the celery worker locally.
 		--pool=prefork \
 		--loglevel=DEBUG
 
+#################################
+# TESTING
+#################################
+
 .PHONY: test
-test: ### Run the tests. (pytest, pytest-asyncio)
-	@(export PYTHONPATH=${PYTHONPATH}:${CURR_DIR} && poetry run pytest -vv || true)
+test: ### Run unit tests.
+	@(export PYTHONPATH=${PYTHONPATH}:${CURR_DIR} && \
+		uv run --with-editable . pytest -vv $(TEST_FILE))
+
+.PHONY: test_watch
+test_watch: ### Run unit tests in watch mode.
+	@(export PYTHONPATH=${PYTHONPATH}:${CURR_DIR} && \
+		uv run --with-editable . ptw --snapshot-update --now . -- -vv tests/unit_tests)
+
+#################################
+# RUNNING INFRA
+#################################
 
 .PHONY: run_infra
 run_infra: ## Run infra
